@@ -1,16 +1,2028 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e11d48'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LOCK&KING Product & Price Intelligence | From Market Data to Better Decisions</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  </head>
-  <body class="bg-slate-50 text-slate-900 selection:bg-rose-500 selection:text-white">
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LOCK&KING Product & Price Intelligence | From Market Data to Better Decisions</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e11d48'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>" />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              500: '#f43f5e',
+              600: '#e11d48',
+              700: '#be123c',
+              800: '#9f1239',
+              900: '#881337',
+            },
+            navy: {
+              800: '#1e293b',
+              900: '#0f172a',
+              950: '#020617',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(8px); border: 1px solid rgba(51, 65, 85, 0.5); }
+    .active-nav-tab { background: linear-gradient(90deg, rgba(225, 29, 72, 0.2) 0%, rgba(225, 29, 72, 0.05) 100%); border-left: 4px solid #e11d48; color: #fff; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-rose-500 selection:text-white">
+
+  <!-- TOP HEADER -->
+  <header class="bg-navy-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-30 px-4 lg:px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <!-- Mobile Drawer Toggle -->
+      <button id="btnToggleMobileMenu" class="lg:hidden p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+
+      <!-- Logo & Brand -->
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-rose-600 to-rose-400 flex items-center justify-center shadow-lg shadow-rose-600/30 text-white font-black text-lg">
+          LK
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="font-extrabold tracking-tight text-white text-base lg:text-lg">LOCK&KING</span>
+            <span class="bg-rose-500/20 text-rose-400 text-xs px-2 py-0.5 rounded-full font-semibold border border-rose-500/30 hidden sm:inline-block">
+              INTELLIGENCE v2.0
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400 hidden sm:block">FROM MARKET DATA TO BETTER DECISIONS</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions & User Role Switcher -->
+    <div class="flex items-center space-x-2 sm:space-x-4">
+      <!-- Global Live Alert indicator -->
+      <button onclick="switchTab('price-war')" class="flex items-center space-x-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2.5 py-1.5 rounded-lg text-xs font-medium transition animate-pulse">
+        <i data-lucide="shield-alert" class="w-4 h-4 text-amber-400"></i>
+        <span class="hidden md:inline">2 Cảnh báo giá</span>
+      </button>
+
+      <!-- Quick Search Input -->
+      <div class="relative hidden xl:block w-64">
+        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+        <input id="globalSearchInput" oninput="handleGlobalSearch(this.value)" type="text" placeholder="Tìm SKU, Model, Đối thủ..." class="w-full bg-slate-900 border border-slate-700 text-xs text-slate-200 pl-9 pr-4 py-2 rounded-lg focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500" />
+      </div>
+
+      <!-- Role Switcher -->
+      <div class="flex items-center space-x-1.5 bg-slate-900 border border-slate-800 rounded-lg p-1 text-xs">
+        <i data-lucide="user-check" class="w-3.5 h-3.5 text-slate-400 ml-1"></i>
+        <select id="roleSelector" onchange="changeUserRole(this.value)" class="bg-transparent text-slate-200 text-xs focus:outline-none pr-2 py-0.5 font-medium cursor-pointer">
+          <option value="CEO" class="bg-slate-900">CEO / Ban Điều Hành</option>
+          <option value="PricingManager" class="bg-slate-900">Giám đốc Định Giá</option>
+          <option value="Procurement" class="bg-slate-900">Trưởng phòng Mua Hàng</option>
+          <option value="Sales" class="bg-slate-900">Kinh Doanh & NPP</option>
+          <option value="Marketing" class="bg-slate-900">E-Commerce & Marketing</option>
+        </select>
+      </div>
+
+      <!-- Live Sync Status -->
+      <div class="hidden lg:flex items-center space-x-1.5 text-xs text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span>Online Sync</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER WITH SIDEBAR & CONTENT -->
+  <div class="flex-1 flex overflow-hidden">
+
+    <!-- DESKTOP SIDEBAR -->
+    <aside id="desktopSidebar" class="hidden lg:flex flex-col w-64 bg-navy-900 border-r border-slate-800 overflow-y-auto shrink-0 select-none">
+      <div class="p-3 space-y-6">
+
+        <!-- Group 1: Ra Quyết Định Cấp Cao -->
+        <div>
+          <div class="px-3 mb-2 text-[11px] font-bold tracking-wider text-slate-400 uppercase">1. Ra Quyết Định Cấp Cao</div>
+          <nav class="space-y-1">
+            <button onclick="switchTab('ceo-dashboard')" data-tab="ceo-dashboard" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition active-nav-tab">
+              <i data-lucide="layout-dashboard" class="w-4 h-4 text-rose-500"></i>
+              <span>Tổng quan CEO</span>
+            </button>
+            <button onclick="switchTab('ai-advisor')" data-tab="ai-advisor" class="nav-item w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <div class="flex items-center space-x-3">
+                <i data-lucide="sparkles" class="w-4 h-4 text-purple-400"></i>
+                <span>Trợ lý AI Chiến lược</span>
+              </div>
+              <span class="bg-purple-500/20 text-purple-300 text-[10px] px-1.5 py-0.5 rounded font-bold">AI</span>
+            </button>
+            <button onclick="switchTab('price-war')" data-tab="price-war" class="nav-item w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <div class="flex items-center space-x-3">
+                <i data-lucide="shield-alert" class="w-4 h-4 text-amber-400"></i>
+                <span>Dò Chiến Tranh Giá</span>
+              </div>
+              <span class="bg-rose-500 text-white text-[10px] px-1.5 py-0.2 rounded-full font-bold">HOT</span>
+            </button>
+            <button onclick="switchTab('alert-center')" data-tab="alert-center" class="nav-item w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <div class="flex items-center space-x-3">
+                <i data-lucide="bell" class="w-4 h-4 text-slate-400"></i>
+                <span>Trung tâm Cảnh báo</span>
+              </div>
+              <span class="bg-slate-800 text-slate-300 text-[10px] px-1.5 py-0.5 rounded font-bold">5</span>
+            </button>
+          </nav>
+        </div>
+
+        <!-- Group 2: Sản Phẩm & Đối Thủ -->
+        <div>
+          <div class="px-3 mb-2 text-[11px] font-bold tracking-wider text-slate-400 uppercase">2. Sản Phẩm & Đối Thủ</div>
+          <nav class="space-y-1">
+            <button onclick="switchTab('product-master')" data-tab="product-master" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <i data-lucide="box" class="w-4 h-4 text-blue-400"></i>
+              <span>Trung tâm Sản phẩm</span>
+            </button>
+            <button onclick="switchTab('competitors')" data-tab="competitors" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <i data-lucide="users" class="w-4 h-4 text-indigo-400"></i>
+              <span>Đối thủ Cạnh tranh</span>
+            </button>
+            <button onclick="switchTab('product-mapping')" data-tab="product-mapping" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <i data-lucide="git-merge" class="w-4 h-4 text-emerald-400"></i>
+              <span>Ánh xạ & Ghép cặp</span>
+            </button>
+            <button onclick="switchTab('compare-matrix')" data-tab="compare-matrix" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <i data-lucide="columns-3" class="w-4 h-4 text-cyan-400"></i>
+              <span>So sánh Đối đầu Matrix</span>
+            </button>
+            <button onclick="switchTab('new-product-pos')" data-tab="new-product-pos" class="nav-item w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <div class="flex items-center space-x-3">
+                <i data-lucide="plus-circle" class="w-4 h-4 text-rose-400"></i>
+                <span>Thẩm định SP Mới (POS)</span>
+              </div>
+              <span class="bg-rose-500/20 text-rose-300 text-[10px] px-1.5 py-0.5 rounded font-bold">POS</span>
+            </button>
+          </nav>
+        </div>
+
+        <!-- Group 3: Định Giá & Thị Trường -->
+        <div>
+          <div class="px-3 mb-2 text-[11px] font-bold tracking-wider text-slate-400 uppercase">3. Định Giá & Thị Trường</div>
+          <nav class="space-y-1">
+            <button onclick="switchTab('pricing-intelligence')" data-tab="pricing-intelligence" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <i data-lucide="calculator" class="w-4 h-4 text-amber-400"></i>
+              <span>True Cost & Thang Giá</span>
+            </button>
+            <button onclick="switchTab('what-if-simulator')" data-tab="what-if-simulator" class="nav-item w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <div class="flex items-center space-x-3">
+                <i data-lucide="sliders" class="w-4 h-4 text-violet-400"></i>
+                <span>Giả lập Giá What-If</span>
+              </div>
+              <span class="bg-violet-500/20 text-violet-300 text-[10px] px-1.5 py-0.5 rounded font-bold">Sim</span>
+            </button>
+            <button onclick="switchTab('market-prices')" data-tab="market-prices" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <i data-lucide="trending-up" class="w-4 h-4 text-green-400"></i>
+              <span>Giá Sàn & Đa Kênh</span>
+            </button>
+            <button onclick="switchTab('price-history')" data-tab="price-history" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <i data-lucide="line-chart" class="w-4 h-4 text-teal-400"></i>
+              <span>Lịch sử Biến động Giá</span>
+            </button>
+            <button onclick="switchTab('market-gap')" data-tab="market-gap" class="nav-item w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <div class="flex items-center space-x-3">
+                <i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i>
+                <span>Khoảng trống Thị trường</span>
+              </div>
+              <span class="bg-emerald-500/20 text-emerald-300 text-[10px] px-1.5 py-0.5 rounded font-bold">Xanh</span>
+            </button>
+            <button onclick="switchTab('inventory-intelligence')" data-tab="inventory-intelligence" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <i data-lucide="warehouse" class="w-4 h-4 text-orange-400"></i>
+              <span>Quản trị Tồn kho & Rủi ro</span>
+            </button>
+          </nav>
+        </div>
+
+        <!-- Group 4: Hệ Thống & Báo Cáo -->
+        <div>
+          <div class="px-3 mb-2 text-[11px] font-bold tracking-wider text-slate-400 uppercase">4. Báo Cáo & Cấu Hình</div>
+          <nav class="space-y-1">
+            <button onclick="switchTab('reports-export')" data-tab="reports-export" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <i data-lucide="file-spreadsheet" class="w-4 h-4 text-slate-400"></i>
+              <span>Báo Cáo & Xuất Dữ Liệu</span>
+            </button>
+            <button onclick="switchTab('data-center')" data-tab="data-center" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <i data-lucide="database" class="w-4 h-4 text-slate-400"></i>
+              <span>Trung tâm Dữ liệu & Logs</span>
+            </button>
+            <button onclick="switchTab('settings')" data-tab="settings" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
+              <span>Cài đặt Trọng số (PCS/POS)</span>
+            </button>
+            <button onclick="switchTab('user-permissions')" data-tab="user-permissions" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+              <i data-lucide="shield" class="w-4 h-4 text-slate-400"></i>
+              <span>Phân quyền Người dùng (RBAC)</span>
+            </button>
+          </nav>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- MOBILE SLIDE-OUT DRAWER OVERLAY -->
+    <div id="mobileDrawerBackdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
+    
+    <!-- MOBILE DRAWER MENU -->
+    <div id="mobileDrawer" class="fixed inset-y-0 left-0 w-72 bg-navy-900 border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out lg:hidden overflow-y-auto flex flex-col justify-between">
+      <div class="p-4">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded-lg bg-rose-600 flex items-center justify-center text-white font-bold text-sm">LK</div>
+            <span class="font-bold text-white text-base">LOCK&KING</span>
+          </div>
+          <button onclick="toggleMobileMenu()" class="p-1.5 text-slate-400 hover:text-white rounded-lg">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <div class="mt-4 space-y-4">
+          <!-- Quick nav buttons inside mobile drawer -->
+          <button onclick="switchTab('ceo-dashboard'); toggleMobileMenu()" class="w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 flex items-center space-x-3">
+            <i data-lucide="layout-dashboard" class="w-4 h-4 text-rose-500"></i>
+            <span>Tổng quan CEO</span>
+          </button>
+          <button onclick="switchTab('ai-advisor'); toggleMobileMenu()" class="w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 flex items-center space-x-3">
+            <i data-lucide="sparkles" class="w-4 h-4 text-purple-400"></i>
+            <span>Trợ lý AI Chiến lược</span>
+          </button>
+          <button onclick="switchTab('price-war'); toggleMobileMenu()" class="w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 flex items-center space-x-3">
+            <i data-lucide="shield-alert" class="w-4 h-4 text-amber-400"></i>
+            <span>Dò Chiến Tranh Giá</span>
+          </button>
+          <button onclick="switchTab('product-master'); toggleMobileMenu()" class="w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 flex items-center space-x-3">
+            <i data-lucide="box" class="w-4 h-4 text-blue-400"></i>
+            <span>Trung tâm Sản phẩm</span>
+          </button>
+          <button onclick="switchTab('pricing-intelligence'); toggleMobileMenu()" class="w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 flex items-center space-x-3">
+            <i data-lucide="calculator" class="w-4 h-4 text-amber-400"></i>
+            <span>True Cost & Thang Giá</span>
+          </button>
+          <button onclick="switchTab('what-if-simulator'); toggleMobileMenu()" class="w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 flex items-center space-x-3">
+            <i data-lucide="sliders" class="w-4 h-4 text-violet-400"></i>
+            <span>Giả lập Giá What-If</span>
+          </button>
+          <button onclick="switchTab('new-product-pos'); toggleMobileMenu()" class="w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 flex items-center space-x-3">
+            <i data-lucide="plus-circle" class="w-4 h-4 text-rose-400"></i>
+            <span>Thẩm định SP Mới (POS)</span>
+          </button>
+          <button onclick="switchTab('compare-matrix'); toggleMobileMenu()" class="w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 flex items-center space-x-3">
+            <i data-lucide="columns-3" class="w-4 h-4 text-cyan-400"></i>
+            <span>So sánh Đối đầu Matrix</span>
+          </button>
+          <button onclick="switchTab('market-gap'); toggleMobileMenu()" class="w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 flex items-center space-x-3">
+            <i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i>
+            <span>Khoảng trống Thị trường</span>
+          </button>
+          <button onclick="switchTab('inventory-intelligence'); toggleMobileMenu()" class="w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 flex items-center space-x-3">
+            <i data-lucide="warehouse" class="w-4 h-4 text-orange-400"></i>
+            <span>Quản trị Tồn kho & Rủi ro</span>
+          </button>
+          <button onclick="switchTab('settings'); toggleMobileMenu()" class="w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 flex items-center space-x-3">
+            <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
+            <span>Cài đặt Trọng số</span>
+          </button>
+        </div>
+      </div>
+      <div class="p-4 border-t border-slate-800 text-center text-[11px] text-slate-500">
+        Lock&King Vietnam Intelligence v2.0
+      </div>
+    </div>
+
+    <!-- CONTENT WRAPPER -->
+    <main id="mainContentArea" class="flex-1 overflow-y-auto bg-slate-950 p-4 lg:p-6 pb-24 lg:pb-8">
+      <!-- DYNAMIC TAB CONTENT INSERTED HERE VIA JAVASCRIPT -->
+    </main>
+
+  </div>
+
+  <!-- MOBILE BOTTOM NAVIGATION (Quick Thumb Access) -->
+  <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-navy-900/95 backdrop-blur border-t border-slate-800 z-30 px-2 py-1.5 flex items-center justify-around">
+    <button onclick="switchTab('ceo-dashboard')" class="flex flex-col items-center justify-center p-1 text-slate-400 hover:text-rose-400">
+      <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+      <span class="text-[10px] mt-0.5">CEO</span>
+    </button>
+    <button onclick="switchTab('product-master')" class="flex flex-col items-center justify-center p-1 text-slate-400 hover:text-rose-400">
+      <i data-lucide="box" class="w-5 h-5"></i>
+      <span class="text-[10px] mt-0.5">Sản Phẩm</span>
+    </button>
+    <button onclick="switchTab('pricing-intelligence')" class="flex flex-col items-center justify-center p-1 text-slate-400 hover:text-rose-400">
+      <i data-lucide="calculator" class="w-5 h-5"></i>
+      <span class="text-[10px] mt-0.5">Định Giá</span>
+    </button>
+    <button onclick="switchTab('ai-advisor')" class="flex flex-col items-center justify-center p-1 text-purple-400 relative">
+      <div class="w-8 h-8 rounded-full bg-purple-600/30 flex items-center justify-center border border-purple-500/50">
+        <i data-lucide="sparkles" class="w-4 h-4 text-purple-300"></i>
+      </div>
+      <span class="text-[10px] font-bold text-purple-300">AI</span>
+    </button>
+    <button onclick="toggleMobileMenu()" class="flex flex-col items-center justify-center p-1 text-slate-400 hover:text-rose-400">
+      <i data-lucide="menu" class="w-5 h-5"></i>
+      <span class="text-[10px] mt-0.5">Menu</span>
+    </button>
+  </nav>
+
+  <!-- MODAL: PRODUCT DETAIL MODAL (TRUE COST, 6-TIER LADDER, HEAD-TO-HEAD) -->
+  <div id="productDetailModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
+    <div class="bg-navy-900 border border-slate-700 rounded-2xl w-full max-w-5xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/50">
+        <div class="flex items-center space-x-3">
+          <span id="modalSkuBadge" class="bg-rose-500/20 text-rose-300 font-mono text-xs px-2.5 py-1 rounded border border-rose-500/30 font-bold">LK-8418</span>
+          <h3 id="modalProductName" class="text-base sm:text-lg font-bold text-white truncate max-w-lg">Chi Tiết Sản Phẩm</h3>
+        </div>
+        <button onclick="closeProductModal()" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <!-- Modal Body -->
+      <div id="modalBodyContent" class="p-6 overflow-y-auto space-y-6 flex-1 text-slate-300 text-sm">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer" class="fixed bottom-16 lg:bottom-6 right-4 z-50 space-y-2 pointer-events-none"></div>
+
+  <!-- APPLICATION LOGIC & DATA SCRIPT -->
+  <script>
+    // ==========================================
+    // 1. DATA MASTER (100% TIẾNG VIỆT)
+    // ==========================================
+    const PRODUCTS = [
+      {
+        id: 'LK-8418',
+        sku: 'LK-8418',
+        model: 'LK-RC8418-TI',
+        name: 'Nồi cơm điện cao tần Titanium Lock&King 1.8L IH Cảm biến kép',
+        brand: 'Lock&King',
+        category: 'Nồi cơm điện cao tần & điện tử',
+        productGroup: 'Nồi cơm cao tần',
+        image: 'https://images.unsplash.com/photo-1544233726-9f1d2b27be8b?w=600&auto=format&fit=crop&q=80',
+        size: '1.8L (4-8 người)',
+        capacity: '1.8L',
+        power: '1300W',
+        material: 'Lòng nồi Titanium đa lớp 3.5mm chống dính kim cương',
+        coating: 'Titanium Diamond Non-stick',
+        technology: 'IH Cao tần 360 độ + Fuzzy Logic cảm biến kép',
+        features: ['12 chế độ nấu tự động', 'Hẹn giờ 24h', 'Lòng nồi Titanium siêu bền', 'Van thoát hơi thông minh tháo rời'],
+        warranty: '24 tháng',
+        color: 'Xám Titan / Đen Obsidian',
+        fobVnd: 723900,
+        landedCost: 865000,
+        trueCost: 1120000,
+        listPrice: 2490000,
+        nppPrice: 1350000,
+        dealerPrice: 1550000,
+        facebookPrice: 1790000,
+        marketplacePrice: 1790000,
+        sellingPrice: 1790000,
+        floorPrice: 1490000,
+        attackPrice: 1650000,
+        competitivePrice: 1750000,
+        targetPrice: 1790000,
+        premiumPrice: 1990000,
+        inventory: 1450,
+        avgMonthlySales: 540,
+        stockCoverageMonths: 2.7,
+        grossMargin: 0.374,
+        netMargin: 0.185,
+        pcs: 84,
+        pcsStatus: 'CẠNH TRANH TỐT',
+        pos: 88,
+        lifecycle: 'TĂNG TRƯỞNG',
+        status: 'ĐANG KINH DOANH',
+        marketAverage: 1720000,
+        priceIndex: 104.1,
+        aiRecommendation: {
+          action: 'GIỮ GIÁ VÀ TĂNG TỐC MARKETING TẬP TRUNG USP TITANIUM',
+          headline: 'LK-8418 cao hơn thị trường 4.1% nhưng giữ vị thế dẫn đầu công nghệ lòng nồi Titanium',
+          targetPrice: 1790000,
+          attackPrice: 1650000,
+          details: 'Sản phẩm có lợi thế độc quyền lòng nồi Titanium dày 3.5mm và bảo hành 24 tháng (thị trường chỉ 12-18 tháng). Giữ giá 1.790.000 đ kết hợp tặng kèm muỗng xới cơm cao cấp và voucher 50K trong ngày Mega Live thay vì giảm giá trực tiếp.'
+        },
+        matchedCompetitors: [
+          { brand: 'Sunhouse', model: 'SHD-8868G', name: 'Nồi cơm điện cao tần Sunhouse Mama 1.8L IH', price: 1690000, shopeePrice: 1649000, matchScore: 94, warranty: '24 tháng' },
+          { brand: 'Kalite', model: 'KL-888', name: 'Nồi cơm cao tần Kalite Cosmos 1.8L', price: 1890000, shopeePrice: 1850000, matchScore: 91, warranty: '12 tháng' },
+          { brand: 'Bear', model: 'DFH-B20J1', name: 'Nồi cơm cao tần thông minh Bear 1.8L', price: 1590000, shopeePrice: 1520000, matchScore: 84, warranty: '18 tháng' }
+        ]
+      },
+      {
+        id: 'LK-3118',
+        sku: 'LK-3118',
+        model: 'LK-AF3118-TURBO',
+        name: 'Nồi chiên không dầu Lock&King Rapid Air 6.5L Cửa kính trong suốt',
+        brand: 'Lock&King',
+        category: 'Nồi chiên không dầu & Nồi chiên hơi nước',
+        productGroup: 'Nồi chiên điện tử',
+        image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&auto=format&fit=crop&q=80',
+        size: '6.5L (Gà nguyên con 2.5kg)',
+        capacity: '6.5L',
+        power: '1800W',
+        material: 'Lòng nồi thép không gỉ tráng men Ceramic chống dính hữu cơ',
+        coating: 'Ceramic Organic Non-toxic',
+        technology: 'Rapid Air Turbo 360 + Quạt đối lưu 9 cánh',
+        features: ['Cửa kính cường lực quan sát thức ăn', '8 Menu cài sẵn', 'Tự ngắt khi kéo lòng nồi'],
+        warranty: '24 tháng',
+        color: 'Đen nhám viền vàng kim',
+        fobVnd: 502920,
+        landedCost: 615000,
+        trueCost: 810000,
+        listPrice: 1890000,
+        nppPrice: 990000,
+        dealerPrice: 1120000,
+        facebookPrice: 1290000,
+        marketplacePrice: 1290000,
+        sellingPrice: 1290000,
+        floorPrice: 1050000,
+        attackPrice: 1190000,
+        competitivePrice: 1290000,
+        targetPrice: 1350000,
+        premiumPrice: 1490000,
+        inventory: 920,
+        avgMonthlySales: 660,
+        stockCoverageMonths: 1.4,
+        grossMargin: 0.372,
+        netMargin: 0.178,
+        pcs: 89,
+        pcsStatus: 'RẤT MẠNH',
+        pos: 92,
+        lifecycle: 'TĂNG TRƯỞNG',
+        status: 'ĐANG KINH DOANH',
+        marketAverage: 1390000,
+        priceIndex: 92.8,
+        aiRecommendation: {
+          action: 'CÓ THỂ TĂNG GIÁ 3-5% HOẶC TĂNG TỐC ĐẶT HÀNG RE-ORDER',
+          headline: 'PCS đạt 89/100 rất mạnh, giá đang thấp hơn thị trường 7.2%, tồn kho chỉ còn 1.4 tháng',
+          targetPrice: 1350000,
+          attackPrice: 1250000,
+          details: 'Sản phẩm bán chạy nhất quý (660 cái/tháng). Tồn kho ở mức báo động 1.4 tháng. Đề xuất: Tăng giá bán lẻ lên 1.350.000 đ (+4.6%) để tối ưu biên lợi nhuận và mở PO đặt hàng bổ sung 2.500 cái để tránh đứt hàng.'
+        },
+        matchedCompetitors: [
+          { brand: 'Kalite', model: 'KL-Q10', name: 'Nồi chiên không dầu Kalite Q10 10L', price: 1490000, shopeePrice: 1450000, matchScore: 92, warranty: '12 tháng' },
+          { brand: 'Sunhouse', model: 'SHD-4026', name: 'Nồi chiên không dầu Sunhouse 6.5L điện tử', price: 1350000, shopeePrice: 1290000, matchScore: 89, warranty: '12 tháng' }
+        ]
+      },
+      {
+        id: 'LK-5200',
+        sku: 'LK-5200',
+        model: 'LK-BL5200-PRO',
+        name: 'Máy làm sữa hạt & Xay nấu đa năng Lock&King Pro 1800W Chống ồn',
+        brand: 'Lock&King',
+        category: 'Máy làm sữa hạt & Xay nấu đa năng',
+        productGroup: 'Máy làm sữa hạt cách âm',
+        image: 'https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=600&auto=format&fit=crop&q=80',
+        size: '1.75L Cối thủy tinh Borosilicate',
+        capacity: '1.75L',
+        power: '1800W (Xay 1000W + Nấu 800W)',
+        material: 'Cối thủy tinh 5 lớp chịu nhiệt 300°C + Dao thép 8 cánh',
+        coating: 'Lòng mâm đun Inox 316 y tế',
+        technology: 'Hộp chống ồn Silent Shield kép (<48dB)',
+        features: ['14 chức năng nấu tự động', 'Rửa tự động sấy khô tiệt trùng', 'Hẹn giờ 12 tiếng'],
+        warranty: '24 tháng',
+        color: 'Trắng sữa Bắc Âu',
+        fobVnd: 622300,
+        landedCost: 750000,
+        trueCost: 990000,
+        listPrice: 2290000,
+        nppPrice: 1200000,
+        dealerPrice: 1380000,
+        facebookPrice: 1590000,
+        marketplacePrice: 1590000,
+        sellingPrice: 1590000,
+        floorPrice: 1290000,
+        attackPrice: 1450000,
+        competitivePrice: 1550000,
+        targetPrice: 1590000,
+        premiumPrice: 1790000,
+        inventory: 640,
+        avgMonthlySales: 360,
+        stockCoverageMonths: 1.8,
+        grossMargin: 0.377,
+        netMargin: 0.182,
+        pcs: 82,
+        pcsStatus: 'CẠNH TRANH TỐT',
+        pos: 85,
+        lifecycle: 'BÃO HÒA',
+        status: 'ĐANG KINH DOANH',
+        marketAverage: 1550000,
+        priceIndex: 102.5,
+        aiRecommendation: {
+          action: 'GIỮ GIÁ VÀ ĐẨY BUNDLE VỚI NỒI CHIÊN KHÔNG DẦU',
+          headline: 'Vị thế ổn định, chống ồn <48dB là điểm nhấn so với Unie V8S và Kalite KL-950',
+          targetPrice: 1590000,
+          attackPrice: 1450000,
+          details: 'Khách hàng cực kỳ đánh giá cao tính năng hộp chống ồn. Đối thủ Unie V8S đang giảm giá nhẹ xuống 1.490.000 đ nhưng độ ồn lớn hơn nhiều. Giữ nguyên giá 1.590.000 đ và chạy video so sánh độ ồn thực tế.'
+        },
+        matchedCompetitors: [
+          { brand: 'Unie', model: 'V8S', name: 'Máy làm sữa hạt Unie V8S Voice thông minh', price: 1520000, shopeePrice: 1480000, matchScore: 93, warranty: '24 tháng' },
+          { brand: 'Kalite', model: 'KL-950', name: 'Máy xay nấu sữa hạt chống ồn Kalite KL-950', price: 1790000, shopeePrice: 1750000, matchScore: 95, warranty: '24 tháng' }
+        ]
+      },
+      {
+        id: 'LK-102',
+        sku: 'LK-102',
+        model: 'LK-FP102-TI28',
+        name: 'Chảo xào Titanium đúc nguyên khối Lock&King 28cm Đáy từ tổ ong',
+        brand: 'Lock&King',
+        category: 'Chảo xào & Chảo rán Titanium',
+        productGroup: 'Chảo Titanium chống dính',
+        image: 'https://images.unsplash.com/photo-1584990347449-399086ef6767?w=600&auto=format&fit=crop&q=80',
+        size: 'Đường kính 28cm - Sâu 8.5cm',
+        capacity: '3.8L',
+        power: 'Bếp từ, ga, hồng ngoại',
+        material: 'Hợp kim nhôm đúc đầm tay + Lớp phủ Titanium vân đá núi lửa',
+        coating: 'Titanium Hard Shield 6 lớp không PFOA',
+        technology: 'Đúc nguyên khối Die-casting + Đáy từ 5 lớp',
+        features: ['Tay cầm đúc Inox rỗng cách nhiệt', 'Chống trầy xước xẻng kim loại', 'Vung kính cường lực silicon'],
+        warranty: '36 tháng',
+        color: 'Xám đá Granite',
+        fobVnd: 266700,
+        landedCost: 330000,
+        trueCost: 450000,
+        listPrice: 1190000,
+        nppPrice: 550000,
+        dealerPrice: 650000,
+        facebookPrice: 750000,
+        marketplacePrice: 750000,
+        sellingPrice: 750000,
+        floorPrice: 590000,
+        attackPrice: 690000,
+        competitivePrice: 750000,
+        targetPrice: 790000,
+        premiumPrice: 890000,
+        inventory: 2100,
+        avgMonthlySales: 1050,
+        stockCoverageMonths: 2.0,
+        grossMargin: 0.40,
+        netMargin: 0.22,
+        pcs: 94,
+        pcsStatus: 'RẤT MẠNH',
+        pos: 95,
+        lifecycle: 'TĂNG TRƯỞNG',
+        status: 'ĐANG KINH DOANH',
+        marketAverage: 820000,
+        priceIndex: 91.5,
+        aiRecommendation: {
+          action: 'MỞ RỘNG QUY MÔ SẢN PHẨM & TẠO BỘ COMBO 24CM-28CM',
+          headline: 'Chỉ số PCS 94 điểm - Hero SKU có năng lực thống lĩnh phân khúc chảo cao cấp',
+          targetPrice: 750000,
+          attackPrice: 690000,
+          details: 'Sản phẩm vượt trội đối thủ Elmich và Tefal nhờ bảo hành chống tróc tới 36 tháng mà giá bán rẻ hơn Elmich 15%. Tiếp tục dùng làm SKU kéo traffic toàn gian hàng.'
+        },
+        matchedCompetitors: [
+          { brand: 'Elmich', model: 'EL-0359', name: 'Chảo xào hợp kim nhôm đúc Elmich Hera 28cm', price: 890000, shopeePrice: 850000, matchScore: 92, warranty: '24 tháng' },
+          { brand: 'Tefal', model: 'G2591902', name: 'Chảo xào chống dính Tefal Unlimited 28cm', price: 1150000, shopeePrice: 1090000, matchScore: 88, warranty: '24 tháng' }
+        ]
+      },
+      {
+        id: 'LK-990',
+        sku: 'LK-990',
+        model: 'LK-RH990-WAVE',
+        name: 'Máy hút mùi chữ T cảm ứng vẫy tay Lock&King Smart Sensor 70cm',
+        brand: 'Lock&King',
+        category: 'Thiết bị nhà bếp thông minh',
+        productGroup: 'Máy hút mùi gắn tường',
+        image: 'https://images.unsplash.com/photo-1585659722983-3a675dabf23d?w=600&auto=format&fit=crop&q=80',
+        size: '700 x 480 x 550 mm',
+        capacity: '1200 m3/h',
+        power: '220W BLDC biến tần',
+        material: 'Inox 430 chống bám vân tay + Mặt kính đen cường lực',
+        coating: 'Phủ nano chống bám dầu mỡ',
+        technology: 'Cảm ứng vẫy tay Smart Wave + Tự làm sạch nhiệt Dry-Clean',
+        features: ['3 cấp độ gió', 'Đèn LED siêu sáng', 'Lưới lọc Inox 304 tháo rời'],
+        warranty: '24 tháng',
+        color: 'Inox xước / Kính đen',
+        fobVnd: 1828800,
+        landedCost: 2250000,
+        trueCost: 2750000,
+        listPrice: 4290000,
+        nppPrice: 2850000,
+        dealerPrice: 3050000,
+        facebookPrice: 3290000,
+        marketplacePrice: 3290000,
+        sellingPrice: 3290000,
+        floorPrice: 2890000,
+        attackPrice: 3050000,
+        competitivePrice: 3150000,
+        targetPrice: 3490000,
+        premiumPrice: 3890000,
+        inventory: 480,
+        avgMonthlySales: 54,
+        stockCoverageMonths: 8.9,
+        grossMargin: 0.164,
+        netMargin: 0.042,
+        pcs: 58,
+        pcsStatus: 'YẾU',
+        pos: 52,
+        lifecycle: 'SUY THOÁI',
+        status: 'TỒN KHO RỦI RO',
+        marketAverage: 3100000,
+        priceIndex: 106.1,
+        aiRecommendation: {
+          action: 'DỪNG NHẬP MỚI + GIẢM GIÁ XẢ KHO HOẶC BUNDLE VỚI BẾP TỪ',
+          headline: 'CẢNH BÁO TỒN KHO RỦI RO: Stock Coverage 8.9 tháng, PCS 58/100',
+          targetPrice: 2990000,
+          attackPrice: 2850000,
+          details: 'Chi phí lưu kho đang ăn mòn lợi nhuận. Đề xuất: Dừng đặt hàng mới. Chạy chương trình Combo "Bếp từ + Hút mùi LK-990 giảm ngay 1.200.000 đ" cho đại lý để giải phóng tồn kho trong 60 ngày.'
+        },
+        matchedCompetitors: [
+          { brand: 'Sunhouse', model: 'SHB-6629', name: 'Máy hút mùi kính cong Sunhouse Apex 70cm', price: 2890000, shopeePrice: 2750000, matchScore: 86, warranty: '18 tháng' },
+          { brand: 'Kangaroo', model: 'KG-70CS', name: 'Máy hút mùi chữ T cảm biến Kangaroo 70cm', price: 3150000, shopeePrice: 3090000, matchScore: 92, warranty: '24 tháng' }
+        ]
+      }
+    ];
+
+    const COMPETITOR_BRANDS = [
+      { id: 'sunhouse', name: 'Sunhouse', origin: 'Việt Nam', tier: 'Phổ thông / Trung cấp', skuCount: 142, marketShare: '26.4%', avgPriceIndex: 94 },
+      { id: 'kalite', name: 'Kalite', origin: 'Việt Nam / Tech', tier: 'Trung & Cao cấp', skuCount: 68, marketShare: '14.2%', avgPriceIndex: 104 },
+      { id: 'bear', name: 'Bear', origin: 'Nội địa Trung Quốc', tier: 'Trẻ trung / Trung cấp', skuCount: 84, marketShare: '12.8%', avgPriceIndex: 92 },
+      { id: 'elmich', name: 'Elmich', origin: 'Cộng hòa Séc', tier: 'Trung & Cao cấp', skuCount: 110, marketShare: '11.5%', avgPriceIndex: 112 },
+      { id: 'philips', name: 'Philips', origin: 'Hà Lan', tier: 'Cao cấp Toàn cầu', skuCount: 45, marketShare: '9.3%', avgPriceIndex: 135 },
+      { id: 'tefal', name: 'Tefal', origin: 'Pháp', tier: 'Cao cấp Toàn cầu', skuCount: 52, marketShare: '8.7%', avgPriceIndex: 128 },
+      { id: 'kangaroo', name: 'Kangaroo', origin: 'Việt Nam', tier: 'Phổ thông / Trung cấp', skuCount: 95, marketShare: '7.9%', avgPriceIndex: 90 },
+      { id: 'bluestone', name: 'Bluestone', origin: 'Singapore', tier: 'Trung cấp', skuCount: 60, marketShare: '5.6%', avgPriceIndex: 99 },
+      { id: 'locknlock', name: 'Lock&Lock', origin: 'Hàn Quốc', tier: 'Trung & Cao cấp', skuCount: 78, marketShare: '6.2%', avgPriceIndex: 118 },
+      { id: 'olivo', name: 'Olivo', origin: 'Mỹ', tier: 'Cao cấp', skuCount: 32, marketShare: '3.8%', avgPriceIndex: 122 }
+    ];
+
+    const MARKET_GAPS = [
+      { range: '500K - 700K', count: 34, lk: 2, level: 'RẤT KHỐC LIỆT', color: 'rose', margin: '24%', opp: 'ĐẠI DƯƠNG ĐỎ', score: 45, note: 'Giá rẻ cạnh tranh khốc liệt, chủ yếu là sản phẩm cơ dung tích nhỏ.' },
+      { range: '700K - 900K', count: 28, lk: 1, level: 'CAO', color: 'orange', margin: '30%', opp: 'TRUNG BÌNH', score: 68, note: 'Phân khúc chuyển tiếp. Lock&King có chảo LK-102 bán rất mạnh.' },
+      { range: '900K - 1.2M', count: 22, lk: 0, level: 'TRUNG BÌNH', color: 'amber', margin: '34%', opp: 'CƠ HỘI TỐT', score: 82, note: 'Lock&King đang THIẾU nồi chiên 5L hoặc nồi lẩu thông minh trong dải giá này.' },
+      { range: '1.2M - 1.5M', count: 14, lk: 1, level: 'VỪA PHẢI', color: 'blue', margin: '38%', opp: 'RẤT MẠNH (SWEET SPOT)', score: 92, note: 'Vùng giá ngọt ngào nhất của E-commerce. LK-3118 đang chiếm lĩnh.' },
+      { range: '1.5M - 1.9M', count: 8, lk: 2, level: 'THẤP', color: 'emerald', margin: '42%', opp: 'ĐẠI DƯƠNG XANH', score: 96, note: 'Chỉ có 8 sản phẩm. Khách hàng sẵn sàng trả tiền cho IH và Titanium cao cấp.' },
+      { range: '> 1.9M', count: 16, lk: 2, level: 'TRUNG BÌNH', color: 'purple', margin: '45%', opp: 'TIỀM NĂNG', score: 78, note: 'Sân chơi của Philips, Tefal. Lock&King có thể dùng cấu hình cao giá rẻ hơn 20%.' }
+    ];
+
+    // Formatters
+    const formatVND = (num) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(num).replace('₫', 'đ');
+    const formatPercent = (dec) => `${(dec * 100).toFixed(1)}%`;
+
+    // State
+    let currentTab = 'ceo-dashboard';
+    let currentRole = 'CEO';
+    let searchKeyword = '';
+    let simValues = { price: 1290000, basePrice: 1290000, trueCost: 810000, volume: 660, mktPercent: 12, feePercent: 9 };
+
+    // ==========================================
+    // 2. VIEW RENDERERS
+    // ==========================================
+
+    function renderCeoDashboard() {
+      return `
+        <div class="space-y-6">
+          <!-- Welcome Banner & Decision Summary -->
+          <div class="bg-gradient-to-r from-navy-900 via-navy-800 to-rose-950/40 p-6 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 relative z-10">
+              <div>
+                <div class="flex items-center space-x-2 text-xs text-rose-400 font-semibold uppercase tracking-wider mb-1">
+                  <i data-lucide="zap" class="w-4 h-4"></i>
+                  <span>Quyết Định Cần Ra Hôm Nay (Today's Executive Action)</span>
+                </div>
+                <h1 class="text-xl sm:text-2xl font-black text-white">Bảng Điều Hành Trí Tuệ Giá & Sản Phẩm</h1>
+                <p class="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
+                  Hệ thống phát hiện <strong class="text-amber-400">1 đợt chiến tranh giá</strong>, <strong class="text-emerald-400">1 cơ hội tăng giá (+4.6%)</strong> và <strong class="text-rose-400">1 SKU tồn kho 8.9 tháng</strong> cần giải phóng.
+                </p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <button onclick="switchTab('ai-advisor')" class="px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-purple-600/30 flex items-center space-x-2 transition">
+                  <i data-lucide="sparkles" class="w-4 h-4"></i>
+                  <span>Hỏi AI Pricing Advisor</span>
+                </button>
+                <button onclick="switchTab('what-if-simulator')" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold border border-slate-700 flex items-center space-x-2 transition">
+                  <i data-lucide="sliders" class="w-4 h-4 text-rose-400"></i>
+                  <span>Giả lập Doanh Thu & Lợi Nhuận</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4 KEY KPI CARDS -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div class="glass-card p-4 rounded-xl">
+              <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
+                <span>Điểm Sức Mạnh Giá (PCS)</span>
+                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+              </div>
+              <div class="text-2xl sm:text-3xl font-black text-white font-mono">81.4<span class="text-sm font-normal text-slate-400">/100</span></div>
+              <div class="text-[11px] text-emerald-400 mt-1 flex items-center space-x-1">
+                <i data-lucide="trending-up" class="w-3.5 h-3.5"></i>
+                <span>+3.2 điểm so với tháng trước</span>
+              </div>
+            </div>
+
+            <div class="glass-card p-4 rounded-xl">
+              <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
+                <span>Chỉ Số Giá TT (Price Index)</span>
+                <i data-lucide="percent" class="w-4 h-4 text-blue-400"></i>
+              </div>
+              <div class="text-2xl sm:text-3xl font-black text-white font-mono">99.4%</div>
+              <div class="text-[11px] text-blue-400 mt-1">Cân bằng tối ưu với đối thủ</div>
+            </div>
+
+            <div class="glass-card p-4 rounded-xl">
+              <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
+                <span>Biên Lợi Nhuận Gộp TB</span>
+                <i data-lucide="pie-chart" class="w-4 h-4 text-purple-400"></i>
+              </div>
+              <div class="text-2xl sm:text-3xl font-black text-emerald-400 font-mono">37.8%</div>
+              <div class="text-[11px] text-slate-400 mt-1">Vượt mục tiêu biên gộp 35%</div>
+            </div>
+
+            <div class="glass-card p-4 rounded-xl">
+              <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
+                <span>SKU Cần Ra Quyết Định</span>
+                <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400"></i>
+              </div>
+              <div class="text-2xl sm:text-3xl font-black text-rose-400 font-mono">3 <span class="text-xs font-normal text-slate-400">SKU</span></div>
+              <div class="text-[11px] text-rose-400 mt-1">1 Tồn kho - 1 Giá - 1 Cơ hội</div>
+            </div>
+          </div>
+
+          <!-- 3 TOP EXECUTIVE ACTIONS TODAY -->
+          <div class="space-y-3">
+            <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center space-x-2">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-rose-500"></i>
+              <span>3 Hành Động Ban Điều Hành Cần Phê Duyệt Hôm Nay</span>
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Action 1 -->
+              <div class="bg-navy-900 border border-amber-500/30 rounded-xl p-4 flex flex-col justify-between space-y-3 relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-amber-500/20 text-amber-300 text-[10px] px-2 py-0.5 rounded-bl font-bold">CHIẾN TRANH GIÁ</div>
+                <div>
+                  <div class="flex items-center space-x-2 text-amber-400 text-xs font-bold mb-1">
+                    <i data-lucide="shield-alert" class="w-4 h-4"></i>
+                    <span>SKU LK-3118 (Nồi chiên 6.5L)</span>
+                  </div>
+                  <h4 class="text-sm font-bold text-white">Sunhouse & Kalite giảm giá 9-11%</h4>
+                  <p class="text-xs text-slate-400 mt-1">Đối thủ giảm giá xả hàng. Đề xuất KHÔNG giảm giá theo mà tặng kẹp gắp thực phẩm Inox + voucher 50K để bảo vệ biên lợi nhuận 37.2%.</p>
+                </div>
+                <div class="flex items-center space-x-2 pt-2 border-t border-slate-800">
+                  <button onclick="approveExecutiveAction('LK-3118', 'KÍCH HOẠT BUNDLE QUÀ TẶNG')" class="flex-1 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-lg text-xs font-bold transition">
+                    Phê Duyệt Playbook
+                  </button>
+                  <button onclick="openProductDetail('LK-3118')" class="p-1.5 text-slate-400 hover:text-white bg-slate-800 rounded-lg text-xs">
+                    Chi tiết
+                  </button>
+                </div>
+              </div>
+
+              <!-- Action 2 -->
+              <div class="bg-navy-900 border border-emerald-500/30 rounded-xl p-4 flex flex-col justify-between space-y-3 relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-emerald-500/20 text-emerald-300 text-[10px] px-2 py-0.5 rounded-bl font-bold">CƠ HỘI TĂNG GIÁ</div>
+                <div>
+                  <div class="flex items-center space-x-2 text-emerald-400 text-xs font-bold mb-1">
+                    <i data-lucide="trending-up" class="w-4 h-4"></i>
+                    <span>SKU LK-3118 (Hero SKU)</span>
+                  </div>
+                  <h4 class="text-sm font-bold text-white">Tăng giá bán lẻ lên 1.350.000 đ</h4>
+                  <p class="text-xs text-slate-400 mt-1">Điểm PCS 89 rất mạnh, hàng bán chạy 660 cái/tháng, tồn kho chỉ còn 1.4 tháng. Tăng giá 4.6% mang lại thêm 39.6 triệu lợi nhuận/tháng.</p>
+                </div>
+                <div class="flex items-center space-x-2 pt-2 border-t border-slate-800">
+                  <button onclick="approveExecutiveAction('LK-3118', 'TĂNG GIÁ LÊN 1.350.000 đ')" class="flex-1 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 rounded-lg text-xs font-bold transition">
+                    Duyệt Tăng Giá
+                  </button>
+                  <button onclick="openProductDetail('LK-3118')" class="p-1.5 text-slate-400 hover:text-white bg-slate-800 rounded-lg text-xs">
+                    Chi tiết
+                  </button>
+                </div>
+              </div>
+
+              <!-- Action 3 -->
+              <div class="bg-navy-900 border border-rose-500/30 rounded-xl p-4 flex flex-col justify-between space-y-3 relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-rose-500/20 text-rose-300 text-[10px] px-2 py-0.5 rounded-bl font-bold">TỒN KHO 8.9 THÁNG</div>
+                <div>
+                  <div class="flex items-center space-x-2 text-rose-400 text-xs font-bold mb-1">
+                    <i data-lucide="alert-octagon" class="w-4 h-4"></i>
+                    <span>SKU LK-990 (Hút mùi Smart)</span>
+                  </div>
+                  <h4 class="text-sm font-bold text-white">Dừng nhập mới + Tạo Combo Bếp</h4>
+                  <p class="text-xs text-slate-400 mt-1">Tồn kho 480 cái (8.9 tháng bán). Dừng mở PO mới, chạy chương trình Combo Bếp từ tặng hút mùi để giải phóng 350 cái trong 60 ngày.</p>
+                </div>
+                <div class="flex items-center space-x-2 pt-2 border-t border-slate-800">
+                  <button onclick="approveExecutiveAction('LK-990', 'DỪNG NHẬP + XẢ COMBO BẾP')" class="flex-1 py-1.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 rounded-lg text-xs font-bold transition">
+                    Duyệt Xả Kho
+                  </button>
+                  <button onclick="openProductDetail('LK-990')" class="p-1.5 text-slate-400 hover:text-white bg-slate-800 rounded-lg text-xs">
+                    Chi tiết
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MAIN PRODUCT OVERVIEW TABLE -->
+          <div class="bg-navy-900 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xl">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+              <div>
+                <h3 class="text-base font-bold text-white">Bảng Giám Sát Danh Mục Trọng Điểm Lock&King</h3>
+                <p class="text-xs text-slate-400">Theo dõi giá, True Cost, biên lợi nhuận và điểm PCS thời gian thực</p>
+              </div>
+              <button onclick="switchTab('product-master')" class="text-xs text-rose-400 hover:text-rose-300 font-semibold flex items-center space-x-1">
+                <span>Xem toàn bộ SKU</span>
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="text-slate-400 border-b border-slate-800 bg-slate-900/50">
+                    <th class="py-3 px-3">Mã SKU / Tên Sản Phẩm</th>
+                    <th class="py-3 px-3 text-right">True Cost</th>
+                    <th class="py-3 px-3 text-right">Giá Bán Lẻ</th>
+                    <th class="py-3 px-3 text-right">Giá Thị Trường</th>
+                    <th class="py-3 px-3 text-right">Biên Gộp</th>
+                    <th class="py-3 px-3 text-center">Điểm PCS</th>
+                    <th class="py-3 px-3 text-center">Tồn Kho</th>
+                    <th class="py-3 px-3 text-center">Hành Động</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800 text-slate-300">
+                  ${PRODUCTS.map(p => `
+                    <tr class="hover:bg-slate-800/50 transition">
+                      <td class="py-3 px-3">
+                        <div class="flex items-center space-x-3">
+                          <img src="${p.image}" class="w-10 h-10 rounded-lg object-cover bg-slate-800 shrink-0" />
+                          <div>
+                            <div class="flex items-center space-x-1.5">
+                              <span class="font-bold text-white font-mono">${p.sku}</span>
+                              <span class="text-[10px] px-1.5 py-0.2 rounded ${p.pcs >= 85 ? 'bg-emerald-500/20 text-emerald-300' : (p.pcs >= 70 ? 'bg-blue-500/20 text-blue-300' : 'bg-rose-500/20 text-rose-300')} font-semibold">${p.lifecycle}</span>
+                            </div>
+                            <div class="text-slate-400 truncate max-w-xs text-[11px]">${p.name}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="py-3 px-3 text-right font-mono font-medium">${formatVND(p.trueCost)}</td>
+                      <td class="py-3 px-3 text-right font-mono font-bold text-rose-400">${formatVND(p.sellingPrice)}</td>
+                      <td class="py-3 px-3 text-right font-mono text-slate-400">${formatVND(p.marketAverage)}</td>
+                      <td class="py-3 px-3 text-right font-mono font-bold ${p.grossMargin >= 0.35 ? 'text-emerald-400' : 'text-amber-400'}">${formatPercent(p.grossMargin)}</td>
+                      <td class="py-3 px-3 text-center">
+                        <span class="inline-block px-2 py-1 rounded-lg font-bold font-mono text-xs ${p.pcs >= 85 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : (p.pcs >= 70 ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30')}">
+                          ${p.pcs}/100
+                        </span>
+                      </td>
+                      <td class="py-3 px-3 text-center">
+                        <div class="font-mono text-xs ${p.stockCoverageMonths > 6 ? 'text-rose-400 font-bold' : 'text-slate-300'}">${p.stockCoverageMonths} tháng</div>
+                        <div class="text-[10px] text-slate-500">${p.inventory} cái</div>
+                      </td>
+                      <td class="py-3 px-3 text-center">
+                        <button onclick="openProductDetail('${p.id}')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-medium border border-slate-700 transition">
+                          Xem 6 Thang Giá
+                        </button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderProductMaster() {
+      const filtered = PRODUCTS.filter(p => 
+        p.name.toLowerCase().includes(searchKeyword.toLowerCase()) || 
+        p.sku.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        p.category.toLowerCase().includes(searchKeyword.toLowerCase())
+      );
+
+      return `
+        <div class="space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h1 class="text-xl font-black text-white">Trung Tâm Quản Trị Sản Phẩm (Product Master)</h1>
+              <p class="text-xs text-slate-400">Danh mục SKU Lock&King, thông số kỹ thuật, True Cost và Thang giá 6 tầng</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="switchTab('new-product-pos')" class="px-3.5 py-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-rose-600/30 flex items-center space-x-1.5 transition">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                <span>Thẩm Định SP Mới</span>
+              </button>
+              <button onclick="exportDataExcel()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 flex items-center space-x-1.5 transition">
+                <i data-lucide="download" class="w-4 h-4"></i>
+                <span>Xuất Excel</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Filter & Search Bar -->
+          <div class="glass-card p-3 rounded-xl flex flex-col md:flex-row items-center gap-3">
+            <div class="relative w-full md:w-80">
+              <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+              <input type="text" value="${searchKeyword}" oninput="handleLocalSearch(this.value)" placeholder="Tìm theo tên sản phẩm, SKU, công nghệ..." class="w-full bg-slate-900 border border-slate-700 text-xs text-slate-200 pl-9 pr-3 py-2 rounded-lg focus:outline-none focus:border-rose-500" />
+            </div>
+            <div class="flex items-center space-x-2 w-full md:w-auto overflow-x-auto">
+              <button class="px-3 py-1.5 bg-rose-600 text-white rounded-lg text-xs font-semibold shrink-0">Tất cả (${PRODUCTS.length})</button>
+              <button class="px-3 py-1.5 bg-slate-800 text-slate-300 hover:bg-slate-700 rounded-lg text-xs shrink-0">Nồi cơm cao tần (1)</button>
+              <button class="px-3 py-1.5 bg-slate-800 text-slate-300 hover:bg-slate-700 rounded-lg text-xs shrink-0">Nồi chiên không dầu (1)</button>
+              <button class="px-3 py-1.5 bg-slate-800 text-slate-300 hover:bg-slate-700 rounded-lg text-xs shrink-0">Chảo Titanium (1)</button>
+            </div>
+          </div>
+
+          <!-- Product Cards Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            ${filtered.map(p => `
+              <div class="bg-navy-900 border border-slate-800 hover:border-slate-700 rounded-2xl p-4 flex flex-col justify-between space-y-4 transition shadow-lg">
+                <div class="space-y-3">
+                  <div class="flex items-start justify-between gap-2">
+                    <img src="${p.image}" class="w-16 h-16 rounded-xl object-cover bg-slate-800 shrink-0 border border-slate-700" />
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center space-x-2">
+                        <span class="font-mono font-bold text-white text-sm">${p.sku}</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded font-semibold ${p.pcs >= 85 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-blue-500/20 text-blue-300'}">${p.pcsStatus}</span>
+                      </div>
+                      <h4 class="text-xs font-bold text-slate-200 mt-1 line-clamp-2">${p.name}</h4>
+                      <p class="text-[11px] text-slate-400 mt-0.5">${p.category}</p>
+                    </div>
+                  </div>
+
+                  <!-- Key Specs -->
+                  <div class="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80 text-[11px] space-y-1">
+                    <div class="flex justify-between text-slate-400"><span>Công nghệ:</span><span class="text-slate-200 font-medium truncate max-w-[170px]">${p.technology}</span></div>
+                    <div class="flex justify-between text-slate-400"><span>Vật liệu:</span><span class="text-slate-200 font-medium truncate max-w-[170px]">${p.material}</span></div>
+                    <div class="flex justify-between text-slate-400"><span>Bảo hành:</span><span class="text-emerald-400 font-bold">${p.warranty}</span></div>
+                  </div>
+
+                  <!-- Pricing 6-Tier Highlights -->
+                  <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                    <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">
+                      <div class="text-[10px] text-slate-400">True Cost</div>
+                      <div class="font-mono font-bold text-white mt-0.5">${formatVND(p.trueCost)}</div>
+                    </div>
+                    <div class="bg-rose-500/10 p-2 rounded-lg border border-rose-500/30">
+                      <div class="text-[10px] text-rose-400 font-semibold">Giá Bán Lẻ</div>
+                      <div class="font-mono font-bold text-rose-400 mt-0.5">${formatVND(p.sellingPrice)}</div>
+                    </div>
+                    <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">
+                      <div class="text-[10px] text-slate-400">Biên Gộp</div>
+                      <div class="font-mono font-bold text-emerald-400 mt-0.5">${formatPercent(p.grossMargin)}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center space-x-2 pt-2 border-t border-slate-800">
+                  <button onclick="openProductDetail('${p.id}')" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold border border-slate-700 transition">
+                    Bóc Tách Chi Phí & Thang Giá
+                  </button>
+                  <button onclick="switchTab('what-if-simulator'); loadSimSku('${p.id}')" title="Giả lập What-If" class="p-2 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-xl">
+                    <i data-lucide="sliders" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCompetitors() {
+      return `
+        <div class="space-y-6">
+          <div>
+            <h1 class="text-xl font-black text-white">Cơ Sở Dữ Liệu Đối Thủ Trọng Yếu (Competitor Intelligence)</h1>
+            <p class="text-xs text-slate-400">Theo dõi 10 thương hiệu gia dụng hàng đầu tại Việt Nam, thị phần và chiến lược giá</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            ${COMPETITOR_BRANDS.map(c => `
+              <div class="bg-navy-900 border border-slate-800 rounded-2xl p-5 space-y-4 hover:border-slate-700 transition">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3 class="text-base font-bold text-white">${c.name}</h3>
+                    <p class="text-xs text-slate-400">${c.origin} • ${c.tier}</p>
+                  </div>
+                  <span class="bg-indigo-500/20 text-indigo-300 text-xs px-2.5 py-1 rounded-full font-bold border border-indigo-500/30">
+                    ${c.marketShare} Thị Phần
+                  </span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 text-xs bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                  <div>
+                    <span class="text-slate-400 text-[11px]">Số lượng SKU theo dõi:</span>
+                    <div class="text-white font-mono font-bold mt-0.5">${c.skuCount} SKU</div>
+                  </div>
+                  <div>
+                    <span class="text-slate-400 text-[11px]">Chỉ số giá TB (Index):</span>
+                    <div class="font-mono font-bold mt-0.5 ${c.avgPriceIndex > 100 ? 'text-amber-400' : 'text-emerald-400'}">${c.avgPriceIndex}%</div>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-xs">
+                  <span class="text-slate-400">Trạng thái crawler: <strong class="text-emerald-400">Đang quét 24/7</strong></span>
+                  <button onclick="showToast('Đã đồng bộ giá mới nhất của ${c.name}')" class="text-rose-400 hover:text-rose-300 font-semibold">Quét giá ngay</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderPricingIntelligence() {
+      return `
+        <div class="space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h1 class="text-xl font-black text-white">Bóc Tách Chi Phí True Cost & Thang Giá 6 Tầng</h1>
+              <p class="text-xs text-slate-400">Công thức tính giá vốn chuẩn 11 cấu phần và thiết lập ma trận giá theo tầng bảo vệ lợi nhuận</p>
+            </div>
+            <button onclick="switchTab('what-if-simulator')" class="px-3.5 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-violet-600/30 flex items-center space-x-2">
+              <i data-lucide="sliders" class="w-4 h-4"></i>
+              <span>Mô Phỏng Biến Động Chi Phí</span>
+            </button>
+          </div>
+
+          <!-- True Cost Breakdown Model Illustration -->
+          <div class="bg-navy-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider text-rose-400">Cấu Trúc 11 Thành Phần Chi Phí True Cost Chuẩn Lock&King</h3>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 text-xs">
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <div class="text-slate-400 text-[11px]">1. Giá FOB Xưởng</div>
+                <div class="text-white font-mono font-bold mt-1">28.50 USD (723.900 đ)</div>
+              </div>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <div class="text-slate-400 text-[11px]">2. Thuế Nhập Khẩu + VAT</div>
+                <div class="text-white font-mono font-bold mt-1">~72.000 đ</div>
+              </div>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <div class="text-slate-400 text-[11px]">3. Cước Cont & Hải Quan</div>
+                <div class="text-white font-mono font-bold mt-1">~45.000 đ</div>
+              </div>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <div class="text-slate-400 text-[11px]">4. Kiểm Định CR & HQ</div>
+                <div class="text-white font-mono font-bold mt-1">~24.000 đ</div>
+              </div>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <div class="text-slate-400 text-[11px]">5. Lưu Kho & Vận Chuyển</div>
+                <div class="text-white font-mono font-bold mt-1">~48.000 đ</div>
+              </div>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <div class="text-slate-400 text-[11px]">6. Dự Phòng Bảo Hành (2%)</div>
+                <div class="text-white font-mono font-bold mt-1">~36.000 đ</div>
+              </div>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <div class="text-slate-400 text-[11px]">7. Phí Sàn & Payment (9%)</div>
+                <div class="text-white font-mono font-bold mt-1">~161.000 đ</div>
+              </div>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <div class="text-slate-400 text-[11px]">8. Chi Phí Marketing (12%)</div>
+                <div class="text-white font-mono font-bold mt-1">~214.000 đ</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6-Tier Price Ladder for Key Products -->
+          <div class="space-y-3">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider">Thang Giá 6 Tầng Chuẩn (6-Tier Price Ladder)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              ${PRODUCTS.map(p => `
+                <div class="bg-navy-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+                  <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                    <div class="flex items-center space-x-2">
+                      <span class="font-mono font-bold text-white">${p.sku}</span>
+                      <span class="text-xs text-slate-300 font-medium truncate max-w-[200px]">${p.name}</span>
+                    </div>
+                    <span class="text-xs font-mono font-bold text-emerald-400">Biên: ${formatPercent(p.grossMargin)}</span>
+                  </div>
+
+                  <div class="space-y-1.5 text-xs">
+                    <div class="flex justify-between items-center p-2 rounded bg-rose-950/40 border border-rose-800/40 text-rose-300">
+                      <span>1. Giá Sàn Tuyệt Đối (Floor Price - Stop Loss):</span>
+                      <strong class="font-mono">${formatVND(p.floorPrice)}</strong>
+                    </div>
+                    <div class="flex justify-between items-center p-2 rounded bg-amber-950/30 border border-amber-800/40 text-amber-300">
+                      <span>2. Giá Tấn Công Mega Sale (Attack Price):</span>
+                      <strong class="font-mono">${formatVND(p.attackPrice)}</strong>
+                    </div>
+                    <div class="flex justify-between items-center p-2 rounded bg-blue-950/30 border border-blue-800/40 text-blue-300">
+                      <span>3. Giá Cạnh Tranh Hằng Ngày (Competitive Price):</span>
+                      <strong class="font-mono">${formatVND(p.competitivePrice)}</strong>
+                    </div>
+                    <div class="flex justify-between items-center p-2 rounded bg-emerald-950/30 border border-emerald-800/40 text-emerald-300">
+                      <span>4. Giá Mục Tiêu Tối Ưu Lợi Nhuận (Target Price):</span>
+                      <strong class="font-mono">${formatVND(p.targetPrice)}</strong>
+                    </div>
+                    <div class="flex justify-between items-center p-2 rounded bg-purple-950/30 border border-purple-800/40 text-purple-300">
+                      <span>5. Giá Cao Cấp Ngoài Campaign (Premium Price):</span>
+                      <strong class="font-mono">${formatVND(p.premiumPrice)}</strong>
+                    </div>
+                    <div class="flex justify-between items-center p-2 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                      <span>6. Giá Niêm Yết Hãng (List Price / MSRP):</span>
+                      <strong class="font-mono line-through text-slate-400">${formatVND(p.listPrice)}</strong>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderWhatIfSimulator() {
+      const grossProfit = simValues.price - simValues.trueCost;
+      const grossMarginPct = (grossProfit / simValues.price);
+      const totalRevenue = simValues.price * simValues.volume;
+      const totalGrossProfit = grossProfit * simValues.volume;
+      const mktCost = totalRevenue * (simValues.mktPercent / 100);
+      const feeCost = totalRevenue * (simValues.feePercent / 100);
+      const netProfit = totalGrossProfit - mktCost - feeCost;
+
+      return `
+        <div class="space-y-6">
+          <div>
+            <h1 class="text-xl font-black text-white">Giả Lập Giá Động (What-If Dynamic Pricing Simulator)</h1>
+            <p class="text-xs text-slate-400">Kéo thả các biến số giá bán, sản lượng, chi phí marketing để dự báo doanh thu và lợi nhuận ròng tức thì</p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- SLIDERS CONTROLS -->
+            <div class="lg:col-span-2 bg-navy-900 border border-slate-800 rounded-2xl p-5 space-y-6">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div class="flex items-center space-x-3">
+                  <div class="w-8 h-8 rounded-lg bg-rose-600/20 text-rose-400 flex items-center justify-center font-bold">LK</div>
+                  <div>
+                    <h3 class="text-sm font-bold text-white">SKU: LK-3118 (Nồi chiên 6.5L)</h3>
+                    <p class="text-[11px] text-slate-400">True Cost chuẩn: ${formatVND(simValues.trueCost)}</p>
+                  </div>
+                </div>
+                <button onclick="resetSimulator()" class="text-xs text-rose-400 hover:text-rose-300 font-semibold">Khôi phục mặc định</button>
+              </div>
+
+              <!-- Slider 1: Giá Bán Lẻ -->
+              <div class="space-y-2">
+                <div class="flex justify-between text-xs">
+                  <span class="text-slate-300 font-semibold">1. Giá Bán Lẻ Mục Tiêu:</span>
+                  <span id="simPriceVal" class="font-mono font-bold text-rose-400 text-sm">${formatVND(simValues.price)}</span>
+                </div>
+                <input type="range" min="1050000" max="1600000" step="10000" value="${simValues.price}" oninput="updateSimValue('price', this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-rose-500" />
+                <div class="flex justify-between text-[10px] text-slate-500">
+                  <span>Giá sàn: 1.050.000 đ</span>
+                  <span>Hiện tại: 1.290.000 đ</span>
+                  <span>Cao cấp: 1.600.000 đ</span>
+                </div>
+              </div>
+
+              <!-- Slider 2: Sản Lượng Bán Tháng -->
+              <div class="space-y-2">
+                <div class="flex justify-between text-xs">
+                  <span class="text-slate-300 font-semibold">2. Sản Lượng Dự Kiến Bán / Tháng:</span>
+                  <span id="simVolumeVal" class="font-mono font-bold text-blue-400 text-sm">${simValues.volume} cái</span>
+                </div>
+                <input type="range" min="200" max="1500" step="20" value="${simValues.volume}" oninput="updateSimValue('volume', this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500" />
+                <div class="flex justify-between text-[10px] text-slate-500">
+                  <span>200 cái/tháng</span>
+                  <span>Chuẩn: 660 cái</span>
+                  <span>1.500 cái/tháng</span>
+                </div>
+              </div>
+
+              <!-- Slider 3: Ngân Sách Marketing & Affiliate -->
+              <div class="space-y-2">
+                <div class="flex justify-between text-xs">
+                  <span class="text-slate-300 font-semibold">3. Tỷ Lệ Chi Phí Marketing & KOC Affiliate:</span>
+                  <span id="simMktVal" class="font-mono font-bold text-purple-400 text-sm">${simValues.mktPercent}%</span>
+                </div>
+                <input type="range" min="5" max="25" step="1" value="${simValues.mktPercent}" oninput="updateSimValue('mktPercent', this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-500" />
+                <div class="flex justify-between text-[10px] text-slate-500">
+                  <span>5% (Organic)</span>
+                  <span>12% (Chuẩn Ecom)</span>
+                  <span>25% (Mega Campaign)</span>
+                </div>
+              </div>
+
+              <!-- Slider 4: Phí Sàn & Vận Hành -->
+              <div class="space-y-2">
+                <div class="flex justify-between text-xs">
+                  <span class="text-slate-300 font-semibold">4. Phí Sàn TMĐT & Thanh Toán:</span>
+                  <span id="simFeeVal" class="font-mono font-bold text-amber-400 text-sm">${simValues.feePercent}%</span>
+                </div>
+                <input type="range" min="6" max="15" step="0.5" value="${simValues.feePercent}" oninput="updateSimValue('feePercent', this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500" />
+              </div>
+            </div>
+
+            <!-- SIMULATION OUTPUT CARD -->
+            <div class="bg-gradient-to-b from-navy-900 to-slate-900 border border-slate-800 rounded-2xl p-5 space-y-5 flex flex-col justify-between shadow-2xl">
+              <div>
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4 flex items-center space-x-2">
+                  <i data-lucide="bar-chart-3" class="w-4 h-4 text-emerald-400"></i>
+                  <span>Kết Quả Giả Lập Thời Gian Thực</span>
+                </h3>
+
+                <div class="space-y-3 text-xs">
+                  <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+                    <span class="text-slate-400 text-[11px]">Tổng Doanh Thu Tháng:</span>
+                    <div id="simTotalRevenue" class="text-lg font-mono font-black text-white mt-0.5">${formatVND(totalRevenue)}</div>
+                  </div>
+
+                  <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+                    <span class="text-slate-400 text-[11px]">Tổng Lợi Nhuận Gộp (Gross Profit):</span>
+                    <div id="simGrossProfit" class="text-lg font-mono font-black text-emerald-400 mt-0.5">${formatVND(totalGrossProfit)}</div>
+                    <div id="simGrossMargin" class="text-[10px] text-emerald-400 font-medium">Biên gộp: ${formatPercent(grossMarginPct)}</div>
+                  </div>
+
+                  <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+                    <span class="text-slate-400 text-[11px]">Ước Tính Lợi Nhuận Ròng (Net Profit):</span>
+                    <div id="simNetProfit" class="text-xl font-mono font-black text-rose-400 mt-0.5">${formatVND(netProfit)}</div>
+                    <div id="simNetMargin" class="text-[10px] text-rose-400 font-medium">Biên ròng: ${formatPercent(netProfit / totalRevenue)}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-[11px] text-emerald-300">
+                💡 <strong>Khuyến nghị AI:</strong> Kịch bản này đảm bảo biên an toàn cao và sản lượng tiêu thụ tối ưu.
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAiAdvisor() {
+      return `
+        <div class="space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="flex items-center space-x-2 text-purple-400 text-xs font-bold uppercase tracking-wider mb-1">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <span>Trợ Lý Chiến Lược Định Giá AI (5-Step Pricing Reasoning)</span>
+              </div>
+              <h1 class="text-xl font-black text-white">Cố Vấn AI Lock&King Intelligence</h1>
+            </div>
+            <span class="bg-purple-500/20 text-purple-300 text-xs px-3 py-1 rounded-full font-bold border border-purple-500/30">
+              Mô hình GPT-4o / Deep Pricing Engine
+            </span>
+          </div>
+
+          <!-- Chat & Reasoning History -->
+          <div class="bg-navy-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
+            <!-- Message 1 from AI -->
+            <div class="flex items-start space-x-3">
+              <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white shrink-0 shadow-lg shadow-purple-600/30">
+                <i data-lucide="bot" class="w-4 h-4"></i>
+              </div>
+              <div class="flex-1 bg-slate-900 border border-slate-800 rounded-2xl p-4 text-xs space-y-3">
+                <div class="flex items-center justify-between">
+                  <strong class="text-purple-300 font-bold">Lock&King AI Pricing Advisor</strong>
+                  <span class="text-slate-500 text-[10px]">Vừa xong</span>
+                </div>
+                
+                <p class="text-slate-200">
+                  Chào Ban Điều Hành Lock&King. Tôi đã hoàn tất phân tích toàn diện <strong>45 SKU đối thủ</strong>, dữ liệu biến động giá sàn 7 ngày qua và lượng tồn kho thực tế. Dưới đây là 3 phát hiện quan trọng:
+                </p>
+
+                <!-- 5-Step Reasoning Cards -->
+                <div class="space-y-2 pt-2 border-t border-slate-800">
+                  <div class="p-2.5 rounded-lg bg-slate-950 border-l-4 border-amber-500">
+                    <strong class="text-amber-400">1. Phát hiện Chiến tranh Giá:</strong>
+                    <span class="text-slate-300"> Sunhouse và Kalite đang xả kho nồi chiên 6.5L (-11%). Khuyến nghị kích hoạt kịch bản phòng thủ Bundle thay vì giảm giá.</span>
+                  </div>
+                  <div class="p-2.5 rounded-lg bg-slate-950 border-l-4 border-emerald-500">
+                    <strong class="text-emerald-400">2. Cơ hội Tăng Giá Hero SKU:</strong>
+                    <span class="text-slate-300"> LK-3118 có điểm PCS 89/100, có thể tăng giá lên 1.350.000 đ (+4.6%) mà không suy giảm sản lượng bán.</span>
+                  </div>
+                  <div class="p-2.5 rounded-lg bg-slate-950 border-l-4 border-rose-500">
+                    <strong class="text-rose-400">3. Cảnh Báo Tồn Kho Hút Mùi LK-990:</strong>
+                    <span class="text-slate-300"> Stock coverage 8.9 tháng. Đề xuất dừng nhập mới và ghép Combo Bếp xả 350 cái trong 60 ngày.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="aiChatOutput" class="space-y-4"></div>
+
+            <!-- Quick Prompt Buttons -->
+            <div class="flex flex-wrap gap-2 pt-2">
+              <button onclick="askAiQuestion('Làm thế nào để phòng thủ chiến tranh giá nồi chiên không dầu?')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-medium border border-slate-700 transition">
+                🛡️ Phòng thủ chiến tranh giá
+              </button>
+              <button onclick="askAiQuestion('Nên định giá bao nhiêu cho nồi cơm cao tần LK-8418?')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-medium border border-slate-700 transition">
+                🍚 Định giá nồi cơm LK-8418
+              </button>
+              <button onclick="askAiQuestion('Giải pháp xử lý tồn kho 8.9 tháng máy hút mùi LK-990?')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-medium border border-slate-700 transition">
+                📦 Xả tồn kho LK-990
+              </button>
+            </div>
+
+            <!-- Chat Input Area -->
+            <div class="flex items-center space-x-2 pt-3 border-t border-slate-800">
+              <input id="aiChatInput" onkeydown="if(event.key==='Enter') sendAiMessage()" type="text" placeholder="Hỏi AI về chiến lược giá, đối thủ, cơ hội thị trường..." class="flex-1 bg-slate-950 border border-slate-700 text-xs text-slate-200 px-4 py-2.5 rounded-xl focus:outline-none focus:border-purple-500" />
+              <button onclick="sendAiMessage()" class="px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-purple-600/30 flex items-center space-x-1.5 transition">
+                <i data-lucide="send" class="w-4 h-4"></i>
+                <span class="hidden sm:inline">Gửi câu hỏi</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderPriceWarDetector() {
+      return `
+        <div class="space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="text-xl font-black text-white">Bộ Dò Chiến Tranh Giá & Kịch Bản Phòng Thủ</h1>
+              <p class="text-xs text-slate-400">Tự động phát hiện khi nhiều đối thủ cùng phân khúc giảm giá & kích hoạt playbook phòng vệ</p>
+            </div>
+            <span class="bg-rose-500 text-white text-xs px-3 py-1 rounded-full font-bold animate-pulse">
+              1 ĐỢT ĐANG DIỄN RA
+            </span>
+          </div>
+
+          <!-- Alert Card -->
+          <div class="bg-navy-900 border border-amber-500/40 rounded-2xl p-5 space-y-4 shadow-xl">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/30">
+                  <i data-lucide="flame" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="text-base font-bold text-white">Chiến Tranh Giá Nhóm Nồi Chiên Không Dầu (1.2M - 1.5M)</h3>
+                  <p class="text-xs text-slate-400">Phát hiện lúc: 2 giờ trước • Mức độ ảnh hưởng: <strong class="text-amber-400">CAO</strong></p>
+                </div>
+              </div>
+              <span class="bg-amber-500/20 text-amber-300 text-xs px-2.5 py-1 rounded-full font-bold border border-amber-500/30">
+                SKU Lock&King bị ảnh hưởng: LK-3118
+              </span>
+            </div>
+
+            <!-- Competitor Drops Table -->
+            <div class="overflow-x-auto bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs">
+              <table class="w-full text-left">
+                <thead>
+                  <tr class="text-slate-400 border-b border-slate-800">
+                    <th class="pb-2">Đối Thủ & Model</th>
+                    <th class="pb-2 text-right">Giá Cũ</th>
+                    <th class="pb-2 text-right">Giá Mới (Sau Giảm)</th>
+                    <th class="pb-2 text-center">% Giảm Giá</th>
+                    <th class="pb-2">Kênh Bán</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800 text-slate-300">
+                  <tr>
+                    <td class="py-2 font-medium">Sunhouse (SHD-4026 6.5L)</td>
+                    <td class="py-2 text-right font-mono line-through text-slate-500">1.450.000 đ</td>
+                    <td class="py-2 text-right font-mono font-bold text-rose-400">1.290.000 đ</td>
+                    <td class="py-2 text-center font-mono font-bold text-rose-400">-11.0%</td>
+                    <td class="py-2 text-slate-400">TikTok Shop & Shopee</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 font-medium">Kalite (KL-Q10 10L)</td>
+                    <td class="py-2 text-right font-mono line-through text-slate-500">1.590.000 đ</td>
+                    <td class="py-2 text-right font-mono font-bold text-rose-400">1.450.000 đ</td>
+                    <td class="py-2 text-center font-mono font-bold text-rose-400">-8.8%</td>
+                    <td class="py-2 text-slate-400">Shopee Mall</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Defense Playbook -->
+            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-3">
+              <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center space-x-1.5">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                <span>Kịch Bản Phòng Thủ Đề Xuất (AI Defense Playbook)</span>
+              </h4>
+              <div class="space-y-1.5 text-xs text-slate-300">
+                <div class="flex items-start space-x-2">
+                  <span class="text-rose-400 font-bold">1.</span>
+                  <span><strong>KHÔNG GIẢM GIÁ TRỰC TIẾP:</strong> LK-3118 có USP vượt trội (cửa kính quan sát + bảo hành 24 tháng). Giảm giá sẽ tự triệt tiêu biên lợi nhuận.</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                  <span class="text-rose-400 font-bold">2.</span>
+                  <span><strong>TẶNG KÈM QUÀ GIÁ TRỊ CẢM NHẬN CAO:</strong> Tặng kẹp gắp Inox 304 (trị giá cảm nhận 45.000 đ, giá vốn chỉ 12.000 đ).</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                  <span class="text-rose-400 font-bold">3.</span>
+                  <span><strong>TĂNG AFFILIATE CHO KOCs:</strong> Tăng thêm 2% hoa hồng Affiliate cho các kênh chuyên review nấu ăn để hút traffic.</span>
+                </div>
+              </div>
+              <div class="pt-2">
+                <button onclick="showToast('Đã kích hoạt kịch bản phòng thủ cho SKU LK-3118!')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition">
+                  Kích Hoạt Chiến Dịch Phòng Thủ Ngay
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCompareMatrix() {
+      return `
+        <div class="space-y-6">
+          <div>
+            <h1 class="text-xl font-black text-white">Ma Trận So Sánh Đối Đầu (Head-to-Head Compare Matrix)</h1>
+            <p class="text-xs text-slate-400">So sánh trực diện từng thông số kỹ thuật, giá bán và đánh giá THẮNG / HÒA / THUA</p>
+          </div>
+
+          <div class="bg-navy-900 border border-slate-800 rounded-2xl p-5 overflow-x-auto shadow-xl">
+            <table class="w-full text-left text-xs min-w-[700px]">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 bg-slate-900/60">
+                  <th class="py-3 px-4">Thuộc Tính So Sánh</th>
+                  <th class="py-3 px-4 bg-rose-950/40 text-rose-300 font-bold">Lock&King LK-8418</th>
+                  <th class="py-3 px-4">Sunhouse SHD-8868G</th>
+                  <th class="py-3 px-4">Kalite KL-888</th>
+                  <th class="py-3 px-4 text-center">Kết Luận</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800 text-slate-300">
+                <tr>
+                  <td class="py-3 px-4 font-semibold text-slate-400">Giá Bán Lẻ Thực Tế</td>
+                  <td class="py-3 px-4 font-mono font-bold text-rose-400 bg-rose-950/20">1.790.000 đ</td>
+                  <td class="py-3 px-4 font-mono">1.690.000 đ</td>
+                  <td class="py-3 px-4 font-mono">1.890.000 đ</td>
+                  <td class="py-3 px-4 text-center"><span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-bold">HÒA</span></td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-semibold text-slate-400">Công Nghệ Lòng Nồi</td>
+                  <td class="py-3 px-4 font-bold text-emerald-400 bg-rose-950/20">Titanium 3.5mm Kim Cương</td>
+                  <td class="py-3 px-4">Nhôm tráng Whitford</td>
+                  <td class="py-3 px-4">Inox 304 tráng Ceramic</td>
+                  <td class="py-3 px-4 text-center"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">THẮNG</span></td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-semibold text-slate-400">Công Suất Nấu</td>
+                  <td class="py-3 px-4 font-bold bg-rose-950/20">1300W (IH Cao Tần)</td>
+                  <td class="py-3 px-4">1200W (IH)</td>
+                  <td class="py-3 px-4">1300W (IH)</td>
+                  <td class="py-3 px-4 text-center"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">THẮNG</span></td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-semibold text-slate-400">Thời Gian Bảo Hành</td>
+                  <td class="py-3 px-4 font-bold text-emerald-400 bg-rose-950/20">24 Tháng Toàn Diện</td>
+                  <td class="py-3 px-4">24 Tháng</td>
+                  <td class="py-3 px-4">12 Tháng</td>
+                  <td class="py-3 px-4 text-center"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">THẮNG</span></td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-semibold text-slate-400">Điểm Sức Mạnh PCS</td>
+                  <td class="py-3 px-4 font-mono font-bold text-emerald-400 bg-rose-950/20">84/100 (RẤT TỐT)</td>
+                  <td class="py-3 px-4 font-mono">79/100</td>
+                  <td class="py-3 px-4 font-mono">74/100</td>
+                  <td class="py-3 px-4 text-center"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">THẮNG</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMarketGap() {
+      return `
+        <div class="space-y-6">
+          <div>
+            <h1 class="text-xl font-black text-white">Phân Tích Khoảng Trống Thị Trường (Market Gap & Blue Ocean)</h1>
+            <p class="text-xs text-slate-400">Phát hiện phân khúc Đại Dương Xanh có nhu cầu cao nhưng ít đối thủ cạnh tranh</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            ${MARKET_GAPS.map(g => `
+              <div class="bg-navy-900 border ${g.opp.includes('ĐẠI DƯƠNG XANH') ? 'border-emerald-500/50 shadow-lg shadow-emerald-500/10' : 'border-slate-800'} rounded-2xl p-5 space-y-4">
+                <div class="flex items-center justify-between">
+                  <span class="font-mono font-black text-white text-base">${g.range}</span>
+                  <span class="text-[10px] px-2.5 py-1 rounded-full font-bold ${g.opp.includes('ĐẠI DƯƠNG XANH') ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-800 text-slate-400'}">
+                    ${g.opp}
+                  </span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 text-xs bg-slate-950 p-3 rounded-xl border border-slate-800">
+                  <div>
+                    <span class="text-slate-400 text-[11px]">Số sản phẩm TT:</span>
+                    <div class="text-white font-mono font-bold mt-0.5">${g.count} SP</div>
+                  </div>
+                  <div>
+                    <span class="text-slate-400 text-[11px]">Lock&King hiện có:</span>
+                    <div class="font-mono font-bold mt-0.5 ${g.lk > 0 ? 'text-emerald-400' : 'text-rose-400'}">${g.lk} SKU</div>
+                  </div>
+                  <div>
+                    <span class="text-slate-400 text-[11px]">Mức độ cạnh tranh:</span>
+                    <div class="text-slate-200 font-medium mt-0.5">${g.level}</div>
+                  </div>
+                  <div>
+                    <span class="text-slate-400 text-[11px]">Điểm cơ hội:</span>
+                    <div class="text-emerald-400 font-mono font-bold mt-0.5">${g.score}/100</div>
+                  </div>
+                </div>
+
+                <p class="text-xs text-slate-300 leading-relaxed">${g.note}</p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderNewProductPos() {
+      return `
+        <div class="space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="text-xl font-black text-white">Thẩm Định Sản Phẩm Mới & Quyết Định Nhập Hàng (POS Engine)</h1>
+              <p class="text-xs text-slate-400">Chấm điểm cơ hội thị trường POS (0-100), tính True Cost và kết luận NÊN NHẬP / CÂN NHẮC / RỦI RO</p>
+            </div>
+            <button onclick="showToast('Đã lưu bản thẩm định sản phẩm mới!')" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-rose-600/30 transition">
+              Lưu Hồ Sơ Thẩm Định
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- INPUT FORM -->
+            <div class="lg:col-span-2 bg-navy-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+              <h3 class="text-sm font-bold text-white uppercase tracking-wider text-rose-400">1. Thông Tin Chào Hàng Từ Nhà Máy</h3>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div>
+                  <label class="text-slate-400 block mb-1">Tên Dự Kiến Sản Phẩm:</label>
+                  <input type="text" value="Nồi lẩu điện đa năng 2 ngăn Lock&King 5L Smart Touch" class="w-full bg-slate-950 border border-slate-700 text-slate-200 p-2.5 rounded-lg" />
+                </div>
+                <div>
+                  <label class="text-slate-400 block mb-1">Danh Mục:</label>
+                  <select class="w-full bg-slate-950 border border-slate-700 text-slate-200 p-2.5 rounded-lg">
+                    <option>Thiết bị nhà bếp thông minh</option>
+                    <option>Nồi chiên không dầu</option>
+                    <option>Nồi cơm cao tần</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-slate-400 block mb-1">Giá FOB Xưởng (USD):</label>
+                  <input type="number" value="14.5" class="w-full bg-slate-950 border border-slate-700 text-slate-200 p-2.5 rounded-lg font-mono font-bold" />
+                </div>
+                <div>
+                  <label class="text-slate-400 block mb-1">Số Lượng Đặt Hàng Tối Thiểu (MOQ):</label>
+                  <input type="number" value="1500" class="w-full bg-slate-950 border border-slate-700 text-slate-200 p-2.5 rounded-lg font-mono" />
+                </div>
+                <div>
+                  <label class="text-slate-400 block mb-1">Giá Bán Lẻ Dự Kiến Thị Trường (VND):</label>
+                  <input type="number" value="890000" class="w-full bg-slate-950 border border-slate-700 text-slate-200 p-2.5 rounded-lg font-mono font-bold text-rose-400" />
+                </div>
+                <div>
+                  <label class="text-slate-400 block mb-1">Bảo Hành Cam Kết:</label>
+                  <input type="text" value="24 tháng" class="w-full bg-slate-950 border border-slate-700 text-slate-200 p-2.5 rounded-lg" />
+                </div>
+              </div>
+            </div>
+
+            <!-- POS SCORE & DECISION OUTPUT -->
+            <div class="bg-gradient-to-b from-navy-900 to-slate-900 border border-emerald-500/30 rounded-2xl p-5 space-y-4 flex flex-col justify-between shadow-2xl">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-slate-400 uppercase font-semibold">Điểm Thẩm Định POS</span>
+                  <span class="bg-emerald-500/20 text-emerald-300 text-xs px-2.5 py-1 rounded font-bold border border-emerald-500/30">NÊN NHẬP HÀNG</span>
+                </div>
+
+                <div class="text-center py-3">
+                  <div class="text-4xl font-black text-emerald-400 font-mono">88<span class="text-lg text-slate-400">/100</span></div>
+                  <p class="text-xs text-slate-300 mt-1">Cơ hội thị trường rất lớn (Dải giá 900K đang trống)</p>
+                </div>
+
+                <div class="space-y-2 text-xs bg-slate-950 p-3 rounded-xl border border-slate-800">
+                  <div class="flex justify-between text-slate-400"><span>True Cost ước tính:</span><span class="text-white font-mono font-bold">540.000 đ</span></div>
+                  <div class="flex justify-between text-slate-400"><span>Giá bán lẻ:</span><span class="text-rose-400 font-mono font-bold">890.000 đ</span></div>
+                  <div class="flex justify-between text-slate-400"><span>Biên lợi nhuận gộp:</span><span class="text-emerald-400 font-mono font-bold">39.3%</span></div>
+                </div>
+              </div>
+
+              <button onclick="approveExecutiveAction('NEW-Lẩu', 'MỞ PO ĐẶT HÀNG NHÀ MÁY')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition">
+                Phê Duyệt Nhập Hàng (Mở PO)
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderInventoryIntelligence() {
+      return `
+        <div class="space-y-6">
+          <div>
+            <h1 class="text-xl font-black text-white">Quản Trị Tồn Kho & Rủi Ro (Inventory Intelligence)</h1>
+            <p class="text-xs text-slate-400">Kiểm soát số tháng bao phủ tồn kho (Stock Coverage) và giải phóng SKU tồn đọng</p>
+          </div>
+
+          <div class="bg-navy-900 border border-slate-800 rounded-2xl p-5 overflow-x-auto shadow-xl">
+            <table class="w-full text-left text-xs min-w-[650px]">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 bg-slate-900/60">
+                  <th class="py-3 px-3">Mã SKU / Sản Phẩm</th>
+                  <th class="py-3 px-3 text-right">Tồn Kho Hiện Tại</th>
+                  <th class="py-3 px-3 text-right">Tốc Độ Bán (Cái/Tháng)</th>
+                  <th class="py-3 px-3 text-center">Bao Phủ Tồn Kho</th>
+                  <th class="py-3 px-3 text-center">Đánh Giá Rủi Ro</th>
+                  <th class="py-3 px-3 text-center">Hành Động Đề Xuất</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800 text-slate-300">
+                ${PRODUCTS.map(p => `
+                  <tr>
+                    <td class="py-3 px-3">
+                      <div class="font-bold text-white font-mono">${p.sku}</div>
+                      <div class="text-slate-400 text-[11px] truncate max-w-xs">${p.name}</div>
+                    </td>
+                    <td class="py-3 px-3 text-right font-mono font-medium">${p.inventory} cái</td>
+                    <td class="py-3 px-3 text-right font-mono font-medium">${p.avgMonthlySales} cái/tháng</td>
+                    <td class="py-3 px-3 text-center font-mono font-bold ${p.stockCoverageMonths > 6 ? 'text-rose-400' : (p.stockCoverageMonths < 1.5 ? 'text-amber-400' : 'text-emerald-400')}">
+                      ${p.stockCoverageMonths} tháng
+                    </td>
+                    <td class="py-3 px-3 text-center">
+                      <span class="px-2 py-0.5 rounded text-[11px] font-bold ${p.stockCoverageMonths > 6 ? 'bg-rose-500/20 text-rose-300' : (p.stockCoverageMonths < 1.5 ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-300')}">
+                        ${p.stockCoverageMonths > 6 ? 'Ứ ĐỌNG NGUY HIỂM' : (p.stockCoverageMonths < 1.5 ? 'NGUY CƠ ĐỨT HÀNG' : 'AN TOÀN')}
+                      </span>
+                    </td>
+                    <td class="py-3 px-3 text-center">
+                      <button onclick="openProductDetail('${p.id}')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium border border-slate-700">
+                        Xử Lý
+                      </button>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAlertCenter() {
+      return `
+        <div class="space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="text-xl font-black text-white">Trung Tâm Cảnh Báo Điều Hành (Alert Center)</h1>
+              <p class="text-xs text-slate-400">Cảnh báo tự động về giá sàn, chiến tranh giá và tồn kho rủi ro</p>
+            </div>
+            <button onclick="showToast('Đã đánh dấu đọc tất cả cảnh báo!')" class="text-xs text-rose-400 hover:text-rose-300 font-semibold">
+              Đánh dấu đã đọc tất cả
+            </button>
+          </div>
+
+          <div class="space-y-3">
+            <div class="bg-navy-900 border border-rose-500/40 rounded-2xl p-4 flex items-start space-x-3">
+              <div class="p-2 rounded-xl bg-rose-500/20 text-rose-400 shrink-0"><i data-lucide="shield-alert" class="w-5 h-5"></i></div>
+              <div class="flex-1 text-xs">
+                <div class="flex justify-between items-center"><strong class="text-white text-sm">Chiến tranh giá nhóm Air Fryer</strong><span class="text-slate-500">15 phút trước</span></div>
+                <p class="text-slate-300 mt-1">Sunhouse (-11%) và Kalite (-8.8%) đồng loạt giảm giá trên TikTok & Shopee.</p>
+                <div class="mt-2 flex space-x-2"><button onclick="switchTab('price-war')" class="px-3 py-1 bg-rose-600 text-white rounded-lg font-bold">Xem Playbook phòng thủ</button></div>
+              </div>
+            </div>
+
+            <div class="bg-navy-900 border border-amber-500/40 rounded-2xl p-4 flex items-start space-x-3">
+              <div class="p-2 rounded-xl bg-amber-500/20 text-amber-400 shrink-0"><i data-lucide="alert-triangle" class="w-5 h-5"></i></div>
+              <div class="flex-1 text-xs">
+                <div class="flex justify-between items-center"><strong class="text-white text-sm">Tồn kho ứ đọng SKU LK-990</strong><span class="text-slate-500">1 giờ trước</span></div>
+                <p class="text-slate-300 mt-1">Stock coverage 8.9 tháng, tốc độ bán chỉ 54 cái/tháng. Cần kích hoạt Combo Bếp xả kho.</p>
+                <div class="mt-2 flex space-x-2"><button onclick="switchTab('ceo-dashboard')" class="px-3 py-1 bg-amber-600 text-white rounded-lg font-bold">Duyệt xả kho</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSettings() {
+      return `
+        <div class="space-y-6">
+          <div>
+            <h1 class="text-xl font-black text-white">Cài Đặt Trọng Số & Ngưỡng An Toàn (Settings)</h1>
+            <p class="text-xs text-slate-400">Tùy biến trọng số công thức tính điểm PCS, POS và mục tiêu biên lợi nhuận</p>
+          </div>
+
+          <div class="bg-navy-900 border border-slate-800 rounded-2xl p-5 space-y-4 max-w-2xl">
+            <h3 class="text-sm font-bold text-white uppercase text-rose-400">Trọng Số Công Thức PCS (Product Competitive Score)</h3>
+            <div class="space-y-3 text-xs">
+              <div class="flex justify-between items-center"><span class="text-slate-300">1. Lợi thế giá bán so với thị trường:</span><strong class="font-mono text-white">35%</strong></div>
+              <div class="flex justify-between items-center"><span class="text-slate-300">2. Thông số kỹ thuật & Công nghệ (USP):</span><strong class="font-mono text-white">30%</strong></div>
+              <div class="flex justify-between items-center"><span class="text-slate-300">3. Thời gian bảo hành:</span><strong class="font-mono text-white">15%</strong></div>
+              <div class="flex justify-between items-center"><span class="text-slate-300">4. Đánh giá người dùng & Thương hiệu:</span><strong class="font-mono text-white">20%</strong></div>
+            </div>
+            <div class="pt-3 border-t border-slate-800">
+              <button onclick="showToast('Đã lưu cài đặt trọng số thành công!')" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold transition">
+                Lưu Thay Đổi
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderUserPermissions() {
+      return `
+        <div class="space-y-6">
+          <div>
+            <h1 class="text-xl font-black text-white">Phân Quyền Người Dùng (RBAC Matrix)</h1>
+            <p class="text-xs text-slate-400">Ma trận quyền hạn chi tiết giữa CEO, Giám đốc Định giá, Mua hàng, Kinh doanh và Marketing</p>
+          </div>
+
+          <div class="bg-navy-900 border border-slate-800 rounded-2xl p-5 overflow-x-auto shadow-xl">
+            <table class="w-full text-left text-xs min-w-[600px]">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 bg-slate-900/60">
+                  <th class="py-3 px-3">Chức Năng</th>
+                  <th class="py-3 px-3 text-center">CEO</th>
+                  <th class="py-3 px-3 text-center">Pricing Manager</th>
+                  <th class="py-3 px-3 text-center">Procurement</th>
+                  <th class="py-3 px-3 text-center">Sales / NPP</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800 text-slate-300">
+                <tr><td class="py-2.5 px-3 font-medium">Xem True Cost 11 Cấu Phần</td><td class="text-center text-emerald-400 font-bold">Toàn quyền</td><td class="text-center text-emerald-400 font-bold">Toàn quyền</td><td class="text-center text-emerald-400 font-bold">Toàn quyền</td><td class="text-center text-slate-500">Ẩn</td></tr>
+                <tr><td class="py-2.5 px-3 font-medium">Phê Duyệt Giá Sàn & Attack Price</td><td class="text-center text-emerald-400 font-bold">Toàn quyền</td><td class="text-center text-blue-400">Đề xuất</td><td class="text-center text-slate-500">Không</td><td class="text-center text-slate-500">Không</td></tr>
+                <tr><td class="py-2.5 px-3 font-medium">Kích Hoạt Playbook Price War</td><td class="text-center text-emerald-400 font-bold">Toàn quyền</td><td class="text-center text-emerald-400 font-bold">Toàn quyền</td><td class="text-center text-slate-500">Không</td><td class="text-center text-blue-400">Xem</td></tr>
+                <tr><td class="py-2.5 px-3 font-medium">Phê Duyệt Nhập Hàng SP Mới (PO)</td><td class="text-center text-emerald-400 font-bold">Toàn quyền</td><td class="text-center text-blue-400">Thẩm định POS</td><td class="text-center text-emerald-400 font-bold">Tạo PO</td><td class="text-center text-slate-500">Không</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // 3. TAB SWITCHING & ROUTING
+    // ==========================================
+    function switchTab(tabId) {
+      currentTab = tabId;
+      const main = document.getElementById('mainContentArea');
+      
+      // Update Active Navigation Highlight
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        if (btn.getAttribute('data-tab') === tabId) {
+          btn.classList.add('active-nav-tab');
+        } else {
+          btn.classList.remove('active-nav-tab');
+        }
+      });
+
+      // Render View
+      switch(tabId) {
+        case 'ceo-dashboard': main.innerHTML = renderCeoDashboard(); break;
+        case 'product-master': main.innerHTML = renderProductMaster(); break;
+        case 'competitors': main.innerHTML = renderCompetitors(); break;
+        case 'pricing-intelligence': main.innerHTML = renderPricingIntelligence(); break;
+        case 'what-if-simulator': main.innerHTML = renderWhatIfSimulator(); break;
+        case 'ai-advisor': main.innerHTML = renderAiAdvisor(); break;
+        case 'price-war': main.innerHTML = renderPriceWarDetector(); break;
+        case 'compare-matrix': main.innerHTML = renderCompareMatrix(); break;
+        case 'product-mapping': main.innerHTML = renderCompareMatrix(); break;
+        case 'market-gap': main.innerHTML = renderMarketGap(); break;
+        case 'new-product-pos': main.innerHTML = renderNewProductPos(); break;
+        case 'inventory-intelligence': main.innerHTML = renderInventoryIntelligence(); break;
+        case 'alert-center': main.innerHTML = renderAlertCenter(); break;
+        case 'settings': main.innerHTML = renderSettings(); break;
+        case 'user-permissions': main.innerHTML = renderUserPermissions(); break;
+        default: main.innerHTML = renderCeoDashboard(); break;
+      }
+
+      // Re-initialize Lucide Icons after dynamic HTML injection
+      lucide.createIcons();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==========================================
+    // 4. INTERACTIVE HANDLERS & MODALS
+    // ==========================================
+    function openProductDetail(productId) {
+      const p = PRODUCTS.find(item => item.id === productId);
+      if (!p) return;
+
+      document.getElementById('modalSkuBadge').innerText = p.sku;
+      document.getElementById('modalProductName').innerText = p.name;
+
+      const body = document.getElementById('modalBodyContent');
+      body.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="space-y-3">
+            <img src="${p.image}" class="w-full h-48 rounded-xl object-cover border border-slate-700" />
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs space-y-1">
+              <div><span class="text-slate-400">Danh mục:</span> <span class="text-white font-medium">${p.category}</span></div>
+              <div><span class="text-slate-400">Bảo hành:</span> <span class="text-emerald-400 font-bold">${p.warranty}</span></div>
+              <div><span class="text-slate-400">Tồn kho:</span> <span class="text-white font-mono">${p.inventory} cái (${p.stockCoverageMonths} tháng)</span></div>
+            </div>
+          </div>
+
+          <div class="md:col-span-2 space-y-4">
+            <!-- 6-Tier Ladder -->
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+              <h4 class="text-xs font-bold text-rose-400 uppercase tracking-wider">Thang Giá 6 Tầng Chuẩn</h4>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-mono">
+                <div class="bg-slate-900 p-2 rounded border border-slate-800"><span class="text-slate-400 text-[10px] block">1. Giá Sàn (Floor)</span><strong class="text-rose-400">${formatVND(p.floorPrice)}</strong></div>
+                <div class="bg-slate-900 p-2 rounded border border-slate-800"><span class="text-slate-400 text-[10px] block">2. Giá Tấn Công (Attack)</span><strong class="text-amber-400">${formatVND(p.attackPrice)}</strong></div>
+                <div class="bg-slate-900 p-2 rounded border border-slate-800"><span class="text-slate-400 text-[10px] block">3. Giá Cạnh Tranh</span><strong class="text-blue-400">${formatVND(p.competitivePrice)}</strong></div>
+                <div class="bg-slate-900 p-2 rounded border border-slate-800"><span class="text-slate-400 text-[10px] block">4. Giá Mục Tiêu (Target)</span><strong class="text-emerald-400">${formatVND(p.targetPrice)}</strong></div>
+                <div class="bg-slate-900 p-2 rounded border border-slate-800"><span class="text-slate-400 text-[10px] block">5. Giá Premium</span><strong class="text-purple-400">${formatVND(p.premiumPrice)}</strong></div>
+                <div class="bg-slate-900 p-2 rounded border border-slate-800"><span class="text-slate-400 text-[10px] block">6. Giá Niêm Yết</span><strong class="text-slate-400 line-through">${formatVND(p.listPrice)}</strong></div>
+              </div>
+            </div>
+
+            <!-- AI Insight -->
+            <div class="p-3 bg-purple-500/10 border border-purple-500/30 rounded-xl text-xs text-purple-200">
+              <div class="font-bold mb-1 flex items-center space-x-1.5"><i data-lucide="sparkles" class="w-4 h-4 text-purple-400"></i><span>Khuyến nghị từ AI Pricing Advisor:</span></div>
+              <p>${p.aiRecommendation.details}</p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('productDetailModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeProductModal() {
+      document.getElementById('productDetailModal').classList.add('hidden');
+    }
+
+    function toggleMobileMenu() {
+      const drawer = document.getElementById('mobileDrawer');
+      const backdrop = document.getElementById('mobileDrawerBackdrop');
+      if (drawer.classList.contains('-translate-x-full')) {
+        drawer.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+      } else {
+        drawer.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+    }
+
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'bg-slate-900 border border-emerald-500/40 text-white px-4 py-3 rounded-xl shadow-2xl text-xs font-semibold flex items-center space-x-2 animate-in slide-in-from-bottom duration-200 pointer-events-auto';
+      toast.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 shrink-0"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      setTimeout(() => {
+        toast.remove();
+      }, 3500);
+    }
+
+    function approveExecutiveAction(sku, actionName) {
+      showToast(`Đã phê duyệt thành công: "${actionName}" cho SKU ${sku}`);
+    }
+
+    function handleGlobalSearch(val) {
+      searchKeyword = val;
+      if (currentTab !== 'product-master') {
+        switchTab('product-master');
+      } else {
+        document.getElementById('mainContentArea').innerHTML = renderProductMaster();
+        lucide.createIcons();
+      }
+    }
+
+    function handleLocalSearch(val) {
+      searchKeyword = val;
+      document.getElementById('mainContentArea').innerHTML = renderProductMaster();
+      lucide.createIcons();
+    }
+
+    function changeUserRole(role) {
+      currentRole = role;
+      showToast(`Đã chuyển sang chế độ phân quyền: ${role}`);
+    }
+
+    function updateSimValue(key, val) {
+      simValues[key] = parseFloat(val);
+      
+      const grossProfit = simValues.price - simValues.trueCost;
+      const grossMarginPct = (grossProfit / simValues.price);
+      const totalRevenue = simValues.price * simValues.volume;
+      const totalGrossProfit = grossProfit * simValues.volume;
+      const mktCost = totalRevenue * (simValues.mktPercent / 100);
+      const feeCost = totalRevenue * (simValues.feePercent / 100);
+      const netProfit = totalGrossProfit - mktCost - feeCost;
+
+      if(document.getElementById('simPriceVal')) document.getElementById('simPriceVal').innerText = formatVND(simValues.price);
+      if(document.getElementById('simVolumeVal')) document.getElementById('simVolumeVal').innerText = `${simValues.volume} cái`;
+      if(document.getElementById('simMktVal')) document.getElementById('simMktVal').innerText = `${simValues.mktPercent}%`;
+      if(document.getElementById('simFeeVal')) document.getElementById('simFeeVal').innerText = `${simValues.feePercent}%`;
+
+      if(document.getElementById('simTotalRevenue')) document.getElementById('simTotalRevenue').innerText = formatVND(totalRevenue);
+      if(document.getElementById('simGrossProfit')) document.getElementById('simGrossProfit').innerText = formatVND(totalGrossProfit);
+      if(document.getElementById('simGrossMargin')) document.getElementById('simGrossMargin').innerText = `Biên gộp: ${formatPercent(grossMarginPct)}`;
+      if(document.getElementById('simNetProfit')) document.getElementById('simNetProfit').innerText = formatVND(netProfit);
+      if(document.getElementById('simNetMargin')) document.getElementById('simNetMargin').innerText = `Biên ròng: ${formatPercent(netProfit / totalRevenue)}`;
+    }
+
+    function resetSimulator() {
+      simValues = { price: 1290000, basePrice: 1290000, trueCost: 810000, volume: 660, mktPercent: 12, feePercent: 9 };
+      document.getElementById('mainContentArea').innerHTML = renderWhatIfSimulator();
+      lucide.createIcons();
+      showToast('Đã khôi phục các biến số giả lập!');
+    }
+
+    function loadSimSku(productId) {
+      const p = PRODUCTS.find(item => item.id === productId);
+      if (p) {
+        simValues.price = p.sellingPrice;
+        simValues.basePrice = p.sellingPrice;
+        simValues.trueCost = p.trueCost;
+        simValues.volume = p.avgMonthlySales;
+        document.getElementById('mainContentArea').innerHTML = renderWhatIfSimulator();
+        lucide.createIcons();
+      }
+    }
+
+    function askAiQuestion(question) {
+      const input = document.getElementById('aiChatInput');
+      if (input) {
+        input.value = question;
+        sendAiMessage();
+      }
+    }
+
+    function sendAiMessage() {
+      const input = document.getElementById('aiChatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const chatOutput = document.getElementById('aiChatOutput');
+      
+      // User message
+      const userBubble = document.createElement('div');
+      userBubble.className = 'flex items-start justify-end space-x-2 text-xs';
+      userBubble.innerHTML = `
+        <div class="bg-rose-600 text-white rounded-2xl px-4 py-2.5 max-w-lg shadow-lg">
+          ${text}
+        </div>
+      `;
+      chatOutput.appendChild(userBubble);
+      input.value = '';
+
+      // AI Response
+      setTimeout(() => {
+        const aiBubble = document.createElement('div');
+        aiBubble.className = 'flex items-start space-x-3 text-xs';
+        aiBubble.innerHTML = `
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white shrink-0">
+            <i data-lucide="bot" class="w-4 h-4"></i>
+          </div>
+          <div class="flex-1 bg-slate-900 border border-purple-500/30 rounded-2xl p-4 space-y-2 text-slate-200">
+            <div class="flex justify-between items-center"><strong class="text-purple-300 font-bold">Lock&King AI Analysis</strong><span class="text-slate-500 text-[10px]">Vừa xong</span></div>
+            <p>Dựa trên ma trận 9 thuộc tính kỹ thuật và chi phí True Cost, phản hồi cho câu hỏi <em>"${text}"</em>:</p>
+            <div class="p-2.5 bg-slate-950 rounded-lg text-slate-300 border border-slate-800 space-y-1">
+              <div>🎯 <strong>Khuyến nghị:</strong> Giữ nguyên giá sàn và chạy chiến dịch quà tặng Bundle trị giá 50.000 đ.</div>
+              <div>📈 <strong>Dự báo:</strong> Giúp duy trì biên lợi nhuận ròng trên 18% và không kích hoạt vòng xoáy giảm giá với đối thủ.</div>
+            </div>
+          </div>
+        `;
+        chatOutput.appendChild(aiBubble);
+        lucide.createIcons();
+      }, 500);
+    }
+
+    function exportDataExcel() {
+      showToast('Đang xuất file Excel dữ liệu định giá Lock&King...');
+    }
+
+    // ==========================================
+    // 5. INITIALIZATION
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      switchTab('ceo-dashboard');
+    });
+  </script>
+</body>
 </html>
