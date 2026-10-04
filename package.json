@@ -1,30 +1,29 @@
 {
-  "name": "qu-n-tr--gi-",
+  "name": "lockking-product-price-intelligence",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start": "vite",
     "build": "vite build",
-    "lint": "oxlint",
     "preview": "vite preview"
   },
   "dependencies": {
-    "autoprefixer": "^10.6.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.52.0",
-    "postcss": "^8.5.28",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "recharts": "^3.10.1",
-    "tailwind-merge": "^3.7.0",
-    "tailwindcss": "^3.4.17"
+    "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.7",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.3",
-    "oxlint": "^1.81.0",
+    "autoprefixer": "^10.6.1",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^3.4.17",
     "vite": "^5.4.11"
   }
 }

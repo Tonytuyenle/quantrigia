@@ -53,25 +53,51 @@ $$\text{DATA} \longrightarrow \text{INSIGHT} \longrightarrow \text{RECOMMENDATIO
 
 ## 🛠️ Công Nghệ Sử Dụng
 
-- **Frontend:** React 18, Vite 5, Tailwind CSS
+- **Frontend:** React, Vite, Tailwind CSS
 - **Icons & Charts:** Lucide React, Recharts
 - **Thiết kế màu sắc:** Deep Navy (`#0F172A`), Lock&King Red (`#E11D48`), Light Grey Surface (`#F8FAFC`)
 
 ---
 
-## 💻 Hướng Dẫn Cài Đặt & Chạy Thử
+## 💻 Hướng Dẫn Cài Đặt & Chạy Dự Án (Từ GitHub)
+
+### 1. Yêu cầu môi trường
+- Đã cài đặt **Node.js** (Khuyến nghị phiên bản LTS từ **Node.js 18.x** hoặc **20.x** trở lên). [Tải Node.js tại đây](https://nodejs.org/).
+- Đã cài đặt **Git**.
+
+### 2. Các bước tải và khởi chạy
 
 ```bash
-# 1. Cài đặt dependencies
+# Bước 1: Clone kho mã nguồn từ GitHub về máy
+git clone https://github.com/Tonytuyenle/quantrigia.git
+
+# Bước 2: Di chuyển vào thư mục dự án
+cd quantrigia
+
+# Bước 3: Cài đặt các thư viện phụ thuộc (Dependencies)
 npm install
 
-# 2. Chạy môi trường phát triển (Dev Server)
+# Bước 4: Khởi động máy chủ phát triển (Dev Server)
 npm run dev
-
-# Ứng dụng sẽ chạy tại: http://localhost:5173
+# hoặc chạy:
+npm start
 ```
+
+Sau khi chạy lệnh trên, terminal sẽ hiển thị địa chỉ cục bộ:
+👉 **Mở trình duyệt truy cập:** `http://localhost:5173` (hoặc nhấn giữ `Ctrl` + click vào link trên terminal).
+
+---
+
+## 🔧 Xử Lý Các Vấn Đề Thường Gặp Khi Chạy
+
+| Tình huống / Lỗi | Nguyên nhân | Cách khắc phục |
+| :--- | :--- | :--- |
+| **`npm install` báo lỗi peer dependency** | Phiên bản npm cũ hoặc xung đột package | Chạy: `npm install --legacy-peer-deps` |
+| **Cổng 5173 bị chiếm dụng** | Có tiến trình khác đang chạy ở cổng 5173 | Vite sẽ tự động đổi sang cổng `5174` hoặc chạy: `npm run dev -- --port 3000` |
+| **PowerShell báo lỗi Execution Policy** | Windows chặn script chưa ký | Mở PowerShell với quyền Admin và chạy: `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser` |
+| **Build ra bản Production tĩnh** | Muốn triển khai lên hosting/server | Chạy: `npm run build` sau đó chạy `npm run preview` |
 
 ---
 
 ## 📄 Bản Quyền & Phát Triển
-Phát triển cho **LOCK&KING VIỆT NAM** — Nền tảng Định Giá & Trí Tuệ Sản Phẩm Chiến Lược.
+Phát triển cho **LOCK&KING VIỆT NAM** — Nền tảng Quản Trị & Trí Tuệ Sản Phẩm Chiến Lược.
